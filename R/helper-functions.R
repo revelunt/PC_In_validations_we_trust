@@ -47,11 +47,16 @@ data.initiate.bow <- function(features = 10) {
   n_media <- .GlobalEnv$n_media
   n.total <- .GlobalEnv$n.total
 
-  media.content.data <- expand.grid(year = 1:20, day = 1:365, medium = 1:n_media, article.id = 1:10) %>% as_tibble() %>% arrange(year, day)
-  media.content.data <- cbind(obs.id = 1:n.total, media.content.data) %>% as_tibble()
+  media.content.data <- expand.grid(year = 1:20,
+                                    day = 1:365,
+                                    medium = 1:n_media,
+                                    article.id = 1:10) %>%
+    as_tibble() %>% arrange(year, day)
+  media.content.data <- cbind(obs.id = 1:n.total, media.content.data) %>%
+    as_tibble()
 
 
-  dat <- t(sapply(1:n.total, function(x) f_1(features)))
+  dat <- t(sapply(1:n.total, function(x) draw_cat(features)))
   dat <- dat %>%
     as_tibble() %>%
     mutate(y_true.value = rbinom(n.total, 1, plogis(dat %*% betas[1:features] + rnorm(n.total))))
@@ -425,26 +430,25 @@ sim_study_svm <- function(k = c(2, 4, 7, 10),
 
 # Bag of words ------------------------------------------------------------
 
-betas <- c(rep(.2, 10))
-
 # Dirichlet priors on the categorical distribution
-f_1 <- function(x){
-  neg_draws <- rdirichlet(1, c(rep(1.5, 6), rep(1, 5)))
-  pos_draws <- rdirichlet(1, c(rep(1, 5), rep(1.5, 6)))
+draw_cat <- function(x){
   test <- rbinom(1, 1, .5)
-  if (test == 1) {
-    obs <- replicate(x, rcat(1, pos_draws)) - 6
-  } else {obs <- replicate(x, rcat(1, neg_draws)) - 6}
-
+  if(test == 1) {
+    obs <- sample(cats, features, prob = pos_draws, replace = T)
+  } else {
+    obs <- sample(cats, features, prob = neg_draws, replace = T)}
   return(obs)
 }
-
 
 
 sim_study.bow <- function(k = c(2, 4, 7, 10),
                           n.units = c(50, 100, 250, 500),
                           target.k.alpha = c(0.5, 0.6, 0.7, 0.8, 0.9)) {
-  features = 10
+  features <- 10
+  neg_draws <- rdirichlet(1, c(rep(1.5, 6), rep(1, 5)))
+  pos_draws <- rdirichlet(1, c(rep(1, 5), rep(1.5, 6)))
+  betas <- c(rep(.2, 10))
+  cats <- -5:5
 
   data <- data.initiate.bow(features)
 

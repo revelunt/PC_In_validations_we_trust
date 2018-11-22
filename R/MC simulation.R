@@ -11,7 +11,8 @@ list.of.packages <- c("data.table", "tidyverse", "dplyr",
                       "ggplot2", "grid", "stringi", "tidyr",
                       "irr", "caret", "rstudioapi",
                       'naivebayes', 'brms', 'rstan')
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+new.packages <- list.of.packages[!(list.of.packages %in%
+                                     installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages, dependencies = T)
 
 ## automatically setting working directories
@@ -47,11 +48,13 @@ n.total # total number of media contents to be coded = 365*20*10*10 = 730000
 ## we assume following data-generating process of dichotomous Y,
 ## which is unknown to a researcher
 ## Y ~ rbinom(n.total, 1, inv.logit(b0 + b1*X1 + b2*X2 + b3*X3))
-## X1, X2, and X3 are the features of the text (e.g., frame, valence, visibility, etc)
-## that are assumed to be normally distributed with their means equal to mu1 to mu3
+## X1, X2, and X3 are the features of the text
+## (e.g., frame, valence, visibility, etc) that are assumed to be
+## normally distributed with their means equal to mu1 to mu3
 ## with some correlations among those document features (see below).
 ## While those text features are known to a researcher,
-## population "parameter values" of true data-generating process are assumed to be unknown to a researcher.
+## population "parameter values" of true data-generating process are
+## assumed to be unknown to a researcher.
 ## We set following parameter values for true data generating model:
 ## b0 = .2, b1 = .5, b2 = .2, b3 = .6
 
