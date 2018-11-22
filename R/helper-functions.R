@@ -512,20 +512,57 @@ sim_study.bow <- function(k = c(2, 4, 7, 10),
 }
 
 
+## main simulation function
+sim.all.scenario.once_naive <- function() {
+  cond <- expand.grid(
+    k = c(2, 4, 7, 10),
+    n.units = c(50, 100, 250, 500),
+    target.k.alpha = c(0.5, 0.6, 0.7, 0.8, 0.9)
+  )
+  res <- apply(cond, 1, function(x) do.call(sim_study, as.list(x)))
+  out <- cbind(cond, bind_rows(res)) %>% as_tibble() %>% setDT()
+  out
+}
 
 
-## use bite compiler to gain some speed
-require(compiler)
-enableJIT(3)
+sim.all.scenario.once_binomial <- function() {
+  cond <- expand.grid(
+    k = c(2, 4, 7, 10),
+    n.units = c(50, 100, 250, 500),
+    target.k.alpha = c(0.5, 0.6, 0.7, 0.8, 0.9)
+  )
+  res <- apply(cond, 1, function(x) do.call(sim_study_binomial, as.list(x)))
+  out <- cbind(cond, bind_rows(res)) %>% as_tibble() %>% setDT()
+  out
+}
 
-## bite-compile helper functions
-data.initiate <- cmpfun(data.initiate)
-data.initiate.bow <- cmpfun(data.initiate.bow)
-select.beta.dist.arg <- cmpfun(select.beta.dist.arg)
-reliability.training <- cmpfun(reliability.training)
-average.agreement <- cmpfun(average.agreement)
-code.valiation.data <- cmpfun(code.valiation.data)
-sim_study <- cmpfun(sim_study)
-sim_study_binomial <- cmpfun(sim_study_binomial)
-sim_study_svm <- cmpfun(sim_study_svm)
-sim_study.bow <- cmpfun(sim_study.bow)
+sim.all.scenario.once_bow <- function() {
+  cond <- expand.grid(
+    k = c(2, 4, 7, 10),
+    n.units = c(50, 100, 250, 500),
+    target.k.alpha = c(0.5, 0.6, 0.7, 0.8, 0.9)
+  )
+  res <- apply(cond, 1, function(x) do.call(sim_study.bow, as.list(x)))
+  out <- cbind(cond, bind_rows(res)) %>% as_tibble() %>% setDT()
+  out
+}
+
+
+# # ## use bite compiler to gain some speed
+ require(compiler)
+ enableJIT(3)
+
+# ## bite-compile helper functions
+ data.initiate <- cmpfun(data.initiate)
+ data.initiate.bow <- cmpfun(data.initiate.bow)
+ select.beta.dist.arg <- cmpfun(select.beta.dist.arg)
+ reliability.training <- cmpfun(reliability.training)
+ average.agreement <- cmpfun(average.agreement)
+ code.valiation.data <- cmpfun(code.valiation.data)
+ sim_study <- cmpfun(sim_study)
+ sim_study_binomial <- cmpfun(sim_study_binomial)
+# sim_study_svm <- cmpfun(sim_study_svm)
+ sim_study.bow <- cmpfun(sim_study.bow)
+ sim.all.scenario.once_naive <- cmpfun(sim.all.scenario.once_naive)
+ sim.all.scenario.once_binomial <- cmpfun(sim.all.scenario.once_binomial)
+ sim.all.scenario.once_bow <- cmpfun(sim.all.scenario.once_bow)
