@@ -30,9 +30,7 @@ library(caret)
 library(tidytext)
 library(MCMCpack)
 library(extraDistr)
-
-theme_set(theme_minimal());
-results_dir <- getwd()
+theme_set(theme_bw())
 
 ## --------------------------------------------- ##
 ## Step 1. Set up the entire media contents data ##
@@ -147,3 +145,89 @@ sim.bow.results <- do.call("rbind", sim.bow.results)
 sim.bow.results[, replication := rep(1:1000, each = 80)]
 save(sim.bow.results, file = "sim.bow.results.Rdata")
 rm(sim.bow.results); gc()
+
+
+## ------------------- ##
+## summarizing results ##
+## ------------------- ##
+
+require(patchwork)
+sim.naive.results[, n.units_f := factor(n.units, levels = c(50, 100, 250, 500),
+                     labels = c("Annotation N = 50", "Annotation N = 100",
+                                 "Annotation N = 250", "Annotation N = 500"))]
+
+p1 <- ggplot(sim.naive.results, aes(x = target.k.alpha, y = accuracy.overall)) +
+  geom_smooth(method = "lm", alpha = 0.2, color = "black") + theme_bw() +
+  facet_grid( ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("Overall Accuracy (against true value)") +
+  theme(legend.position="bottom")
+
+p2 <- ggplot(sim.naive.results, aes(x = target.k.alpha, y = f.overall)) +
+  geom_smooth(method = "lm", alpha = 0.2, color = "black") + theme_bw() +
+  facet_grid( ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("Overall F1 score (using true value)") +
+  theme(legend.position="bottom")
+
+pdf("naive.bayes.summary.01.pdf", width = 12, height = 10, paper = "a4r")
+p1 + p2 + plot_layout(nrow = 2)
+dev.off()
+
+
+## prevalence-adjusted bias (using regression models)
+sim.naive.results[, abs.bias.accuracy := abs((Valdat.accuracy/accuracy.overall) - 1)]
+sim.naive.results[, abs.bias.F1 := abs((Valdat.f/f.overall) - 1)]
+
+p3 <- ggplot(sim.naive.results,
+             aes(x = target.k.alpha, y = abs.bias.accuracy, color = factor(k))) +
+  geom_smooth(method = "lm", alpha = 0.2, aes(color = factor(k))) + theme_bw() +
+  facet_grid( ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("Abs Bias of Accuracy (validation vs. true value)") +
+  theme(legend.position="none") +
+  guides(color = guide_legend(title = "No of coders"))
+
+p4 <- ggplot(sim.naive.results,
+             aes(x = target.k.alpha, y = abs.bias.F1, color = factor(k))) +
+  geom_smooth(method = "lm", alpha = 0.2, aes(color = factor(k))) + theme_bw() +
+  facet_grid( ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("Abs Bias of F1 (validation vs. true value)") +
+  theme(legend.position="bottom") +
+  guides(color = guide_legend(title = "No of coders"))
+
+pdf("naive.bayes.summary.02.pdf", width = 12, height = 10, paper = "a4r")
+p3 + p4 + plot_layout(nrow = 2)
+dev.off()
+
+
+## alternatively,
+sim.naive.results[, bias.accuracy := (Valdat.accuracy - accuracy.overall)/accuracy.overall]
+sim.naive.results[, bias.F1 := (Valdat.f - f.overall)/f.overall]
+
+p3_1 <- sim.naive.results[, .(bias.accuracy = median(bias.accuracy),
+                      lwr = quantile(bias.accuracy, 0.16, na.rm = T),
+                      upr = quantile(bias.accuracy, 0.84, na.rm = T)),
+                  by = c("k", "target.k.alpha", "n.units_f")] %>%
+  ggplot(., aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
+  geom_point(position = position_dodge(0.7)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+  geom_hline(yintercept = 0, color = "grey", linetype = 2) +
+  facet_grid( ~ n.units_f) +
+  xlab("k = No. of coders") + ylab("% Bias in Accuracy (validation vs. true value)") +
+  theme(legend.position="none") +
+  guides(color = guide_legend(title = "Target Kripp alpha values"))
+
+p4_1 <- sim.naive.results[, .(bias.F1 = median(bias.F1),
+                              lwr = quantile(bias.F1, 0.16, na.rm = T),
+                              upr = quantile(bias.F1, 0.84, na.rm = T)),
+                          by = c("k", "target.k.alpha", "n.units_f")] %>%
+  ggplot(., aes(y = bias.F1, x = factor(k), color = factor(target.k.alpha))) +
+  geom_point(position = position_dodge(0.7)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+  geom_hline(yintercept = 0, color = "grey", linetype = 2) +
+  facet_grid( ~ n.units_f) +
+  xlab("k = No. of coders") + ylab("% Bias in F1 (validation vs. true value)") +
+  theme(legend.position="bottom") +
+  guides(color = guide_legend(title = "Target Kripp alpha values"))
+
+pdf("naive.bayes.summary.03.pdf", width = 12, height = 10, paper = "a4r")
+p3_1 + p4_1 + plot_layout(nrow = 2)
+dev.off()
