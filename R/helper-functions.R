@@ -421,23 +421,16 @@ sim_study_svm <- function(k = c(2, 4, 7, 10),
 
 
 
-
-
-
-
-
-
-
 # Bag of words ------------------------------------------------------------
 
 # Dirichlet priors on the categorical distribution
 draw_cat <- function(x){
   test <- rbinom(1, 1, .5)
   if(test == 1) {
-    obs <- sample(cats, features, prob = pos_draws, replace = T)
+    obs <- sample(cats, x, prob = pos_draws, replace = T)
   } else {
-    obs <- sample(cats, features, prob = neg_draws, replace = T)}
-  return(obs)
+    obs <- sample(cats, x, prob = neg_draws, replace = T)}
+  return(obs - 6)
 }
 
 
@@ -448,7 +441,7 @@ sim_study.bow <- function(k = c(2, 4, 7, 10),
   neg_draws <- rdirichlet(1, c(rep(1.5, 6), rep(1, 5)))
   pos_draws <- rdirichlet(1, c(rep(1, 5), rep(1.5, 6)))
   betas <- c(rep(.2, 10))
-  cats <- -5:5
+  cats <- 0:10
 
   data <- data.initiate.bow(features)
 
