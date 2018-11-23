@@ -21,6 +21,7 @@ data.initiate <- function() {
   Sigma <- matrix(rnorm(N*N), N, N)
   Sigma <- Sigma %*% t(Sigma)  # Sigma is PD
 
+
   require(MASS)
   dat <- rmulti_normal(n.total, mu = rnorm(3, 0, 1), ## vector of means
                  Sigma = Sigma)
@@ -39,7 +40,9 @@ data.initiate <- function() {
   media.content.data
 }
 
-data.initiate.bow <- function(features = 10) {
+data.initiate.bow <- function(features = features,
+                              pos_draws = pos_draws,
+                              neg_draws = neg_draws) {
 
   betas <- c(rep(.2, features))
 
@@ -55,12 +58,12 @@ data.initiate.bow <- function(features = 10) {
     as_tibble()
 
 
-  dat <- t(sapply(1:n.total, function(x) draw_cat(features)))
+  dat <- sapply(1:features, function(x) draw_cat(n.total, pos_draws, neg_draws))
   dat <- dat %>%
     as_tibble() %>%
     mutate(y_true.value = rbinom(n.total, 1, plogis(dat %*% betas[1:features] + rnorm(n.total))))
 
-  dat <- dat[, c(sample(1:10, 3), 11)]
+  dat <- dat[, c(sample(1:features, 3), features+1)]
 
   full_data <- cbind(media.content.data, dat)
 
@@ -423,26 +426,29 @@ sim_study_svm <- function(k = c(2, 4, 7, 10),
 # Bag of words ------------------------------------------------------------
 
 # Dirichlet priors on the categorical distribution
-draw_cat <- function(x){
+#neg_draws <- function() rdirichlet(1, c(rep(1.5, 6), rep(1, 5)))
+#pos_draws <- function() rdirichlet(1, c(rep(1, 5), rep(1.5, 6)))
+
+draw_cat <- function(features = features,
+                     pos_draws = pos_draws,
+                     neg_draws = neg_draws){
   test <- rbinom(1, 1, .5)
   if(test == 1) {
-    obs <- sample(cats, x, prob = pos_draws, replace = T)
+    obs <- rcat(features, prob = pos_draws)
   } else {
-    obs <- sample(cats, x, prob = neg_draws, replace = T)}
-  return(obs - 6)
+    obs <- rcat(features, prob = neg_draws)}
+  return(obs - 5)
 }
 
 
 sim_study.bow <- function(k = c(2, 4, 7, 10),
                           n.units = c(50, 100, 250, 500),
                           target.k.alpha = c(0.5, 0.6, 0.7, 0.8, 0.9)) {
-  features <- 10
+  features <- 5
+  betas <- c(rep(.2, features))
   neg_draws <- rdirichlet(1, c(rep(1.5, 6), rep(1, 5)))
   pos_draws <- rdirichlet(1, c(rep(1, 5), rep(1.5, 6)))
-  betas <- c(rep(.2, 10))
-  cats <- 0:10
-
-  data <- data.initiate.bow(features)
+  data <- data.initiate.bow(features = features, pos_draws = pos_draws, neg_draws = neg_draws)
 
   dat.validation <- code.valiation.data(data = data, k = k, n.units = n.units,
                                         target.k.alpha = target.k.alpha)
