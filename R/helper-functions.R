@@ -21,7 +21,6 @@ data.initiate <- function() {
   Sigma <- matrix(rnorm(N*N), N, N)
   Sigma <- Sigma %*% t(Sigma)  # Sigma is PD
 
-
   require(MASS)
   dat <- rmulti_normal(n.total, mu = rnorm(3, 0, 1), ## vector of means
                  Sigma = Sigma)
