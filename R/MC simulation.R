@@ -152,6 +152,11 @@ rm(sim.bow.results); gc()
 ## ------------------- ##
 
 require(patchwork)
+
+
+# ----------- Naive Bayes ----------- #
+
+if (!("sim.naive.results" %in% ls())) load("sim.naive.results.Rdata")
 sim.naive.results[, n.units_f := factor(n.units, levels = c(50, 100, 250, 500),
                      labels = c("Annotation N = 50", "Annotation N = 100",
                                  "Annotation N = 250", "Annotation N = 500"))]
@@ -169,11 +174,12 @@ p2 <- ggplot(sim.naive.results, aes(x = target.k.alpha, y = f.overall)) +
   theme(legend.position="bottom")
 
 pdf("naive.bayes.summary.01.pdf", width = 12, height = 10, paper = "a4r")
-p1 + p2 + plot_layout(nrow = 2)
+p1 + ggtitle("Overall Classification Quality: Naive Bayes") +
+  theme(plot.title = element_text(hjust = 0.5)) + p2 + plot_layout(nrow = 2)
 dev.off()
 
 
-## prevalence-adjusted bias (using regression models)
+## relative bias
 sim.naive.results[, abs.bias.accuracy := abs((Valdat.accuracy/accuracy.overall) - 1)]
 sim.naive.results[, abs.bias.F1 := abs((Valdat.f/f.overall) - 1)]
 
@@ -194,7 +200,8 @@ p4 <- ggplot(sim.naive.results,
   guides(color = guide_legend(title = "No of coders"))
 
 pdf("naive.bayes.summary.02.pdf", width = 12, height = 10, paper = "a4r")
-p3 + p4 + plot_layout(nrow = 2)
+p3 + ggtitle("Absolute Degree of Bias Against True Values: Naive Bayes") +
+  theme(plot.title = element_text(hjust = 0.5)) + p4 + plot_layout(nrow = 2)
 dev.off()
 
 
@@ -229,5 +236,32 @@ p4_1 <- sim.naive.results[, .(bias.F1 = median(bias.F1),
   guides(color = guide_legend(title = "Target Kripp alpha values"))
 
 pdf("naive.bayes.summary.03.pdf", width = 12, height = 10, paper = "a4r")
-p3_1 + p4_1 + plot_layout(nrow = 2)
+p3_1 + ggtitle("% Relative Bias Against True Values: Naive Bayes") +
+  theme(plot.title = element_text(hjust = 0.5)) + p4_1 + plot_layout(nrow = 2)
+dev.off()
+rm(sim.naive.results)
+
+# ------------------ GLM -------------- #
+
+if (!("sim.binomial.results" %in% ls())) load("sim.binomial.results.Rdata")
+sim.binomial.results[, n.units_f := factor(n.units, levels = c(50, 100, 250, 500),
+                                        labels = c("Annotation N = 50", "Annotation N = 100",
+                                                   "Annotation N = 250", "Annotation N = 500"))]
+
+p5 <- ggplot(sim.binomial.results, aes(x = target.k.alpha, y = accuracy.overall)) +
+  geom_smooth(method = "lm", alpha = 0.2, color = "black") + theme_bw() +
+  facet_grid( ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("Overall Accuracy (against true value)") +
+  theme(legend.position="bottom")
+
+p6 <- ggplot(sim.binomial.results, aes(x = target.k.alpha, y = f.overall)) +
+  geom_smooth(method = "lm", alpha = 0.2, color = "black") + theme_bw() +
+  facet_grid( ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("Overall F1 score (using true value)") +
+  theme(legend.position="bottom")
+
+pdf("naive.bayes.summary.01.pdf", width = 12, height = 10, paper = "a4r")
+p5 + ggtitle("Overall Classification Quality: GLM") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  p6 + plot_layout(nrow = 2)
 dev.off()
