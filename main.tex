@@ -171,8 +171,6 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
     
     \subsubsection{Bag-of-Words Scenario}
      For a dictionary (bag-of-words) method, we assume a very similar approach to data generation as discussed above, however we assume values of independent variables were sampled from a Categorical distribution with a separate Dirichlet priors for negative and positive draws (i.e., a discrete value range range from -5 to 5), where they represent some \enquote{features} of a given textual data (e.g., a word or a N-grams). These values then are later to be matched with a \enquote{dictionary} (which has similar discrete values that represent a predefined category) in order to determine the estimated values of \textit{y} for each observation. Since this requires discrete rather than continuous values, here we use slightly different setup for the dictionary approach. Based on those selected textual features, the \textit{true} values of \textit{y} are then sampled from a Binomial distribution as discussed above, with an exception that now the vector $\boldsymbol{\beta}$ is extended to K = 5 and values are fixed to .2, to better approximate the dimensionality of text data.
-
-     \textbf{This is a test delete afterewards!}
     
     
     

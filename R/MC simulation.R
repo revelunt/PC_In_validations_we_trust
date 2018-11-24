@@ -241,6 +241,7 @@ p3_1 + ggtitle("% Relative Bias Against True Values: Naive Bayes") +
 dev.off()
 rm(sim.naive.results)
 
+
 # ------------------ GLM -------------- #
 
 if (!("sim.binomial.results" %in% ls())) load("sim.binomial.results.Rdata")
@@ -260,8 +261,70 @@ p6 <- ggplot(sim.binomial.results, aes(x = target.k.alpha, y = f.overall)) +
   xlab("Target Kripp alpha values") + ylab("Overall F1 score (using true value)") +
   theme(legend.position="bottom")
 
-pdf("naive.bayes.summary.01.pdf", width = 12, height = 10, paper = "a4r")
+pdf("GLM.summary.01.pdf", width = 12, height = 10, paper = "a4r")
 p5 + ggtitle("Overall Classification Quality: GLM") +
   theme(plot.title = element_text(hjust = 0.5)) +
   p6 + plot_layout(nrow = 2)
 dev.off()
+
+## relative bias
+sim.binomial.results[, abs.bias.accuracy := abs((Valdat.accuracy/accuracy.overall) - 1)]
+sim.binomial.results[, abs.bias.F1 := abs((Valdat.f/f.overall) - 1)]
+
+p7 <- ggplot(sim.binomial.results,
+             aes(x = target.k.alpha, y = abs.bias.accuracy, color = factor(k))) +
+  geom_smooth(method = "lm", alpha = 0.2, aes(color = factor(k))) + theme_bw() +
+  facet_grid( ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("Abs Bias of Accuracy (validation vs. true value)") +
+  theme(legend.position="none") +
+  guides(color = guide_legend(title = "No of coders"))
+
+p8 <- ggplot(sim.binomial.results,
+             aes(x = target.k.alpha, y = abs.bias.F1, color = factor(k))) +
+  geom_smooth(method = "lm", alpha = 0.2, aes(color = factor(k))) + theme_bw() +
+  facet_grid( ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("Abs Bias of F1 (validation vs. true value)") +
+  theme(legend.position="bottom") +
+  guides(color = guide_legend(title = "No of coders"))
+
+pdf("GLM.summary.02.pdf", width = 12, height = 10, paper = "a4r")
+p7 + ggtitle("Absolute Degree of Bias Against True Values: GLM") +
+  theme(plot.title = element_text(hjust = 0.5)) + p8 + plot_layout(nrow = 2)
+dev.off()
+
+
+## alternatively,
+sim.binomial.results[, bias.accuracy := (Valdat.accuracy - accuracy.overall)/accuracy.overall]
+sim.binomial.results[, bias.F1 := (Valdat.f - f.overall)/f.overall]
+
+p7_1 <- sim.binomial.results[, .(bias.accuracy = median(bias.accuracy, na.rm = T),
+                              lwr = quantile(bias.accuracy, 0.16, na.rm = T),
+                              upr = quantile(bias.accuracy, 0.84, na.rm = T)),
+                          by = c("k", "target.k.alpha", "n.units_f")] %>%
+  ggplot(., aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
+  geom_point(position = position_dodge(0.7)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+  geom_hline(yintercept = 0, color = "grey", linetype = 2) +
+  facet_grid( ~ n.units_f) +
+  xlab("k = No. of coders") + ylab("% Bias in Accuracy (validation vs. true value)") +
+  theme(legend.position="none") +
+  guides(color = guide_legend(title = "Target Kripp alpha values"))
+
+p8_1 <- sim.binomial.results[, .(bias.F1 = median(bias.F1, na.rm = T),
+                              lwr = quantile(bias.F1, 0.16, na.rm = T),
+                              upr = quantile(bias.F1, 0.84, na.rm = T)),
+                          by = c("k", "target.k.alpha", "n.units_f")] %>%
+  ggplot(., aes(y = bias.F1, x = factor(k), color = factor(target.k.alpha))) +
+  geom_point(position = position_dodge(0.7)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+  geom_hline(yintercept = 0, color = "grey", linetype = 2) +
+  facet_grid( ~ n.units_f) +
+  xlab("k = No. of coders") + ylab("% Bias in F1 (validation vs. true value)") +
+  theme(legend.position="bottom") +
+  guides(color = guide_legend(title = "Target Kripp alpha values"))
+
+pdf("GLM.summary.03.pdf", width = 12, height = 10, paper = "a4r")
+p7_1 + ggtitle("% Relative Bias Against True Values: GLM") +
+  theme(plot.title = element_text(hjust = 0.5)) + p8_1 + plot_layout(nrow = 2)
+dev.off()
+rm(sim.naive.results)
