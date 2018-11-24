@@ -64,7 +64,7 @@
 
 
 \author{\addvspace{.25in} Hyunjin Song, Petro Tolochko, Jakob-Moritz Eberl, Olga Eisele, Esther Greussing, \\
-        Tobias Heidenreich, Fabienne Lind, and Hajo G. Boomgaarden}
+        Tobias Heidenreich, Fabienne Lind, Sebastian Galyga, and Hajo G. Boomgaarden}
 
 \affiliation{Department of Communication, University of Vienna, Austria}
 
@@ -154,8 +154,6 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
     
     \subsubsection{Supervised ML Scenario}
     For supervised learning scenarios, we assume values of independent variables are sampled from a multivariate normal distribution, with a randomly generated variance-covariance matrix \textbf{$\sum$} for each simulation run. This randomly generated variance-covariance matrix ensures that idiosyncratic values of the covariance matrix do not skew the overall results of the simulation. The \textit{true}  values of $y$ (which is the binary variable) are then sampled from a Binomial distribution, with the probability parameter having a very simple linear functional form as follow:
-    
-    
     \begin{equation}
         \begin{gathered}
             y \sim Bernoulli(\pi) \\
@@ -163,17 +161,10 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
             \mu = \boldsymbol{X\beta} + \epsilon
         \end{gathered}
     \end{equation}
-    
-    
-    
- 
     \noindent with $\epsilon$ being Gaussian noise added to ensure that each run of the simulation is not completely deterministic. The $\boldsymbol{\beta}$, true population parameters, were fixed throughout the simulation runs (specifically, $\beta_1$ = .5, $\beta_2$ = .2, and $\beta_3$ = .6, which were randomly chosen). 
     
     \subsubsection{Bag-of-Words Scenario}
-     For a dictionary (bag-of-words) method, we assume a very similar approach to data generation as discussed above, however we assume values of independent variables were sampled from a Categorical distribution with a separate Dirichlet priors for negative and positive draws (i.e., a discrete value range range from -5 to 5), where they represent some \enquote{features} of a given textual data (e.g., a word or a N-grams). These values then are later to be matched with a \enquote{dictionary} (which has similar discrete values that represent a predefined category) in order to determine the estimated values of \textit{y} for each observation. Since this requires discrete rather than continuous values, here we use slightly different setup for the dictionary approach. Based on those selected textual features, the \textit{true} values of \textit{y} are then sampled from a Binomial distribution as discussed above, with an exception that now the vector $\boldsymbol{\beta}$ is extended to K = 5 and values are fixed to .2, to better approximate the dimensionality of text data.
-    
-    
-    
+     For a dictionary (bag-of-words) method, we assume a very similar approach to data generation as discussed above, however we assume values of independent variables were sampled from a Categorical distribution with a separate Dirichlet priors for negative and positive draws (i.e., a discrete value range range from -5 to 5), where they represent some \enquote{features} of a given textual data (e.g., a word or a N-grams). These values then are later to be matched with a \enquote{dictionary} (which has similar discrete values that represent a predefined category) in order to determine the estimated values of \textit{y} for each observation. Since this requires discrete rather than continuous values, here we use slightly different setup for the dictionary approach. Based on those selected textual features, the \textit{true} values of \textit{y} are then sampled from a Binomial distribution as discussed above, with an exception that now the vector $\boldsymbol{\beta}$ is extended to K = 5 and values are fixed to .2, to better approximate the dimensionality of text data and reflect the possibilities of potential feature misspecification.
        \begin{equation}
         \begin{gathered}
 %        
@@ -195,17 +186,13 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
         \pi_{pos} \sim Dirichlet\bigl(K, \alpha_{pos}\bigr)
         \end{gathered}
     \end{equation}
-    
-    \noindent with $K$ being the desired number of independent variables, and $\alpha_{neg}$ and $\alpha_{pos}$ --- concentration hyperparameters with mass concentrated closer and further away from 0, respectively. The negative and positive draw probabilities $\pi_{neg}$ and $\pi_{pos}$ are then randomly selected for each draw and a single row of independent variables is drawn. 
-    
+    \noindent with $K$ being the desired number of independent variables, and $\alpha_{neg}$ and $\alpha_{pos}$ --- concentration hyperparameters with mass concentrated closer and further away from 0, respectively. The negative and positive draw probabilities $\pi_{neg}$ and $\pi_{pos}$ are then randomly selected for each draw and a single column of independent variables is drawn, treating such independent variables as a systematic, recurring features of a given textual data. 
     \begin{equation}
         \begin{gathered}
             \boldsymbol{X} \sim Categorical\bigl(K, \bigl[\pi_{neg}\ \textrm{or}\ \pi_{pos}\bigr]\bigr)
         \end{gathered}
     \end{equation}
-    
     And finally, having generated the set of independent variables, we generate $y$ in a similar fashion as discussed in (1).
-    
      \begin{equation}
         \begin{gathered}
             y \sim Bernoulli(\pi) \\
@@ -213,7 +200,6 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
             \mu = \boldsymbol{X\beta} + \epsilon
         \end{gathered}
     \end{equation}   
-    
 This means that $y$ becomes effectively a function of the simple sum of chosen textual features. 
 
     \subsection{Human Coding Stage}
