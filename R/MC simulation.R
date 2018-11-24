@@ -153,8 +153,11 @@ rm(sim.bow.results); gc()
 
 require(patchwork)
 
-
 # ----------- Naive Bayes ----------- #
+
+## ---------------- ##
+## Basic desciptive ##
+## ---------------- ##
 
 if (!("sim.naive.results" %in% ls())) load("sim.naive.results.Rdata")
 sim.naive.results[, n.units_f := factor(n.units, levels = c(50, 100, 250, 500),
@@ -206,43 +209,116 @@ dev.off()
 
 
 ## alternatively,
-sim.naive.results[, bias.accuracy := (Valdat.accuracy - accuracy.overall)/accuracy.overall]
-sim.naive.results[, bias.F1 := (Valdat.f - f.overall)/f.overall]
+sim.naive.results[, bias.accuracy := (Valdat.accuracy/accuracy.overall)]
+sim.naive.results[, bias.F1 := (Valdat.f/f.overall)]
 
 p3_1 <- sim.naive.results[, .(bias.accuracy = median(bias.accuracy),
-                      lwr = quantile(bias.accuracy, 0.16, na.rm = T),
-                      upr = quantile(bias.accuracy, 0.84, na.rm = T)),
+                      lwr = quantile(bias.accuracy, 0.025, na.rm = T),
+                      upr = quantile(bias.accuracy, 0.975, na.rm = T)),
                   by = c("k", "target.k.alpha", "n.units_f")] %>%
   ggplot(., aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
   geom_point(position = position_dodge(0.7)) +
   geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
-  geom_hline(yintercept = 0, color = "grey", linetype = 2) +
+  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
   facet_grid( ~ n.units_f) +
-  xlab("k = No. of coders") + ylab("% Bias in Accuracy (validation vs. true value)") +
+  xlab("k = No. of coders") + ylab("Relative Bias in Accuracy (validation vs. true value)") +
   theme(legend.position="none") +
   guides(color = guide_legend(title = "Target Kripp alpha values"))
 
 p4_1 <- sim.naive.results[, .(bias.F1 = median(bias.F1),
-                              lwr = quantile(bias.F1, 0.16, na.rm = T),
-                              upr = quantile(bias.F1, 0.84, na.rm = T)),
+                              lwr = quantile(bias.F1, 0.025, na.rm = T),
+                              upr = quantile(bias.F1, 0.975, na.rm = T)),
                           by = c("k", "target.k.alpha", "n.units_f")] %>%
   ggplot(., aes(y = bias.F1, x = factor(k), color = factor(target.k.alpha))) +
   geom_point(position = position_dodge(0.7)) +
   geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
-  geom_hline(yintercept = 0, color = "grey", linetype = 2) +
+  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
   facet_grid( ~ n.units_f) +
-  xlab("k = No. of coders") + ylab("% Bias in F1 (validation vs. true value)") +
+  xlab("k = No. of coders") + ylab("Relative Bias in F1 (validation vs. true value)") +
   theme(legend.position="bottom") +
   guides(color = guide_legend(title = "Target Kripp alpha values"))
 
 pdf("naive.bayes.summary.03.pdf", width = 12, height = 10, paper = "a4r")
-p3_1 + ggtitle("% Relative Bias Against True Values: Naive Bayes") +
+p3_1 + ggtitle("Relative Bias Against True Values: Naive Bayes") +
   theme(plot.title = element_text(hjust = 0.5)) + p4_1 + plot_layout(nrow = 2)
 dev.off()
-rm(sim.naive.results)
+
+
+## ---------------------------------------------------------- ##
+## Amaong those studies which pass the validation check!      ##
+## cutoff value is the mean of accuracy/F1 score from Study 1 ##
+## ---------------------------------------------------------- ##
+
+sim.naive.results[, results := ifelse(Valdat.accuracy > 0.6487,
+                                      ifelse(accuracy.overall > 0.6487, "True Pos", "False Pos"),
+                                      ifelse(accuracy.overall > 0.6487, "False Neg", "True Neg"))]
+dat_1 <- sim.naive.results[, .(percent = .N / 1000,
+                               bias.accuracy = median(bias.accuracy, na.rm = T),
+                               lwr = quantile(bias.accuracy, 0.025, na.rm = T),
+                               upr = quantile(bias.accuracy, 0.975, na.rm = T)),
+                           by = c("k", "target.k.alpha", "n.units_f", "results")]
+
+pdf("naive.bayes.summary.04.pdf", width = 12, height = 10, paper = "a4r")
+ggplot(dat_1[results %in% c("False Pos", "False Neg"), ],
+       aes(y = percent, x = factor(target.k.alpha), fill = factor(results))) +
+  geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("% Decision Error Based on Accuracy (validation vs. true value)") +
+  theme(legend.position="bottom") +
+  guides(fill = guide_legend(title = "Error types"))
+
+ggplot(dat_1[results %in% c("False Pos", "False Neg") & percent > 0.01, ],
+       aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
+  geom_point(position = position_dodge(0.7)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
+  facet_grid( ~ n.units_f) +
+  xlab("k = No. of coders") + ylab("False Negative (below 1) vs. False Positive (above 1)") +
+  theme(legend.position="bottom") +
+  ggtitle("Relative Bias in Accuracy (validation vs. true value), Among False Results") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  guides(color = guide_legend(title = "Target Kripp alpha values"))
+dev.off()
+
+
+sim.naive.results[, results2 := ifelse(Valdat.f > 0.6429,
+                                       ifelse(f.overall > 0.6429, "True Pos", "False Pos"),
+                                       ifelse(f.overall > 0.6429, "False Neg", "True Neg"))]
+dat_2 <- sim.naive.results[, .(percent = .N / 1000,
+                               bias.F1 = median(bias.F1, na.rm = T),
+                               lwr = quantile(bias.F1, 0.025, na.rm = T),
+                               upr = quantile(bias.F1, 0.975, na.rm = T)),
+                           by = c("k", "target.k.alpha", "n.units_f", "results2")]
+
+pdf("naive.bayes.summary.05.pdf", width = 12, height = 10, paper = "a4r")
+ggplot(dat_2[results2 %in% c("False Pos", "False Neg"), ],
+       aes(y = percent, x = factor(target.k.alpha), fill = factor(results2))) +
+  geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("% Decision Error Based on F1 (validation vs. true value)") +
+  theme(legend.position="bottom") +
+  guides(fill = guide_legend(title = "Error types"))
+
+ggplot(dat_2[results2 %in% c("False Pos", "False Neg") & percent > 0.01, ],
+       aes(y = bias.F1, x = factor(k), color = factor(target.k.alpha))) +
+  geom_point(position = position_dodge(0.7)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
+  facet_grid( ~ n.units_f) +
+  xlab("k = No. of coders") + ylab("False Negative (below 1) vs. False Positive (above 1)") +
+  theme(legend.position="bottom") +
+  ggtitle("Relative Bias in F1 (validation vs. true value), Among False Results") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  guides(color = guide_legend(title = "Target Kripp alpha values"))
+dev.off()
+
+## remove associated objects
+rm(sim.naive.results, dat_1, dat_2)
 
 
 # ------------------ GLM -------------- #
+
+## ---------------- ##
+## Basic desciptive ##
+## ---------------- ##
 
 if (!("sim.binomial.results" %in% ls())) load("sim.binomial.results.Rdata")
 sim.binomial.results[, n.units_f := factor(n.units, levels = c(50, 100, 250, 500),
@@ -294,37 +370,261 @@ dev.off()
 
 
 ## alternatively,
-sim.binomial.results[, bias.accuracy := (Valdat.accuracy - accuracy.overall)/accuracy.overall]
-sim.binomial.results[, bias.F1 := (Valdat.f - f.overall)/f.overall]
+sim.binomial.results[, bias.accuracy := (Valdat.accuracy/accuracy.overall)]
+sim.binomial.results[, bias.F1 := (Valdat.f/f.overall)]
 
 p7_1 <- sim.binomial.results[, .(bias.accuracy = median(bias.accuracy, na.rm = T),
-                              lwr = quantile(bias.accuracy, 0.16, na.rm = T),
-                              upr = quantile(bias.accuracy, 0.84, na.rm = T)),
+                              lwr = quantile(bias.accuracy, 0.025, na.rm = T),
+                              upr = quantile(bias.accuracy, 0.975, na.rm = T)),
                           by = c("k", "target.k.alpha", "n.units_f")] %>%
   ggplot(., aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
   geom_point(position = position_dodge(0.7)) +
   geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
-  geom_hline(yintercept = 0, color = "grey", linetype = 2) +
+  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
   facet_grid( ~ n.units_f) +
-  xlab("k = No. of coders") + ylab("% Bias in Accuracy (validation vs. true value)") +
+  xlab("k = No. of coders") + ylab("Relative Bias in Accuracy (validation vs. true value)") +
   theme(legend.position="none") +
   guides(color = guide_legend(title = "Target Kripp alpha values"))
 
 p8_1 <- sim.binomial.results[, .(bias.F1 = median(bias.F1, na.rm = T),
-                              lwr = quantile(bias.F1, 0.16, na.rm = T),
-                              upr = quantile(bias.F1, 0.84, na.rm = T)),
+                              lwr = quantile(bias.F1, 0.025, na.rm = T),
+                              upr = quantile(bias.F1, 0.975, na.rm = T)),
                           by = c("k", "target.k.alpha", "n.units_f")] %>%
   ggplot(., aes(y = bias.F1, x = factor(k), color = factor(target.k.alpha))) +
   geom_point(position = position_dodge(0.7)) +
   geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
-  geom_hline(yintercept = 0, color = "grey", linetype = 2) +
+  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
   facet_grid( ~ n.units_f) +
-  xlab("k = No. of coders") + ylab("% Bias in F1 (validation vs. true value)") +
+  xlab("k = No. of coders") + ylab("Relative Bias in F1 (validation vs. true value)") +
   theme(legend.position="bottom") +
   guides(color = guide_legend(title = "Target Kripp alpha values"))
 
 pdf("GLM.summary.03.pdf", width = 12, height = 10, paper = "a4r")
-p7_1 + ggtitle("% Relative Bias Against True Values: GLM") +
+p7_1 + ggtitle("Relative Bias Against True Values: GLM") +
   theme(plot.title = element_text(hjust = 0.5)) + p8_1 + plot_layout(nrow = 2)
 dev.off()
-rm(sim.naive.results)
+
+
+## ---------------------------------------------------------- ##
+## Amaong those studies which pass the validation check!      ##
+## cutoff value is the mean of accuracy/F1 score from Study 1 ##
+## ---------------------------------------------------------- ##
+
+sim.binomial.results[, results := ifelse(Valdat.accuracy > 0.6487,
+                                         ifelse(accuracy.overall > 0.6487, "True Pos", "False Pos"),
+                                         ifelse(accuracy.overall > 0.6487, "False Neg", "True Neg"))]
+dat_3 <- sim.binomial.results[, .(percent = .N / 1000,
+                                  bias.accuracy = median(bias.accuracy, na.rm = T),
+                                  lwr = quantile(bias.accuracy, 0.025, na.rm = T),
+                                  upr = quantile(bias.accuracy, 0.975, na.rm = T)),
+                              by = c("k", "target.k.alpha", "n.units_f", "results")]
+
+pdf("GLM.summary.04.pdf", width = 12, height = 10, paper = "a4r")
+ggplot(dat_3[results %in% c("False Pos", "False Neg"), ],
+       aes(y = percent, x = factor(target.k.alpha), fill = factor(results))) +
+  geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("% Decision Error Based on Accuracy (validation vs. true value)") +
+  theme(legend.position="bottom") +
+  guides(fill = guide_legend(title = "Error types"))
+
+ggplot(dat_3[results %in% c("False Pos", "False Neg") & percent > 0.01, ],
+       aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
+  geom_point(position = position_dodge(0.7)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
+  facet_grid( ~ n.units_f) +
+  xlab("k = No. of coders") + ylab("False Negative (below 1) vs. False Positive (above 1)") +
+  theme(legend.position="bottom") +
+  ggtitle("Relative Bias in Accuracy (validation vs. true value), Among False Results") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  guides(color = guide_legend(title = "Target Kripp alpha values"))
+dev.off()
+
+
+sim.binomial.results[, results2 := ifelse(Valdat.f > 0.6429,
+                                         ifelse(f.overall > 0.6429, "True Pos", "False Pos"),
+                                         ifelse(f.overall > 0.6429, "False Neg", "True Neg"))]
+dat_4 <- sim.binomial.results[, .(percent = .N / 1000,
+                                  bias.F1 = median(bias.F1, na.rm = T),
+                                  lwr = quantile(bias.F1, 0.025, na.rm = T),
+                                  upr = quantile(bias.F1, 0.975, na.rm = T)),
+                              by = c("k", "target.k.alpha", "n.units_f", "results2")]
+
+pdf("GLM.summary.05.pdf", width = 12, height = 10, paper = "a4r")
+ggplot(dat_4[results2 %in% c("False Pos", "False Neg"), ],
+       aes(y = percent, x = factor(target.k.alpha), fill = factor(results2))) +
+  geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("% Decision Error Based on F1 (validation vs. true value)") +
+  theme(legend.position="bottom") +
+  guides(fill = guide_legend(title = "Error types"))
+
+ggplot(dat_4[results2 %in% c("False Pos", "False Neg") & percent > 0.01, ],
+       aes(y = bias.F1, x = factor(k), color = factor(target.k.alpha))) +
+  geom_point(position = position_dodge(0.7)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
+  facet_grid( ~ n.units_f) +
+  xlab("k = No. of coders") + ylab("False Negative (below 1) vs. False Positive (above 1)") +
+  theme(legend.position="bottom") +
+  ggtitle("Relative Bias in F1 (validation vs. true value), Among False Results") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  guides(color = guide_legend(title = "Target Kripp alpha values"))
+dev.off()
+
+rm(sim.binomial.results, dat_3, dat_4)
+
+
+# ------------- Bag of Words ----------------
+
+if (!("sim.bow.results" %in% ls())) load("sim.bow.results.Rdata")
+sim.bow.results[, n.units_f := factor(n.units, levels = c(50, 100, 250, 500),
+                                      labels = c("Annotation N = 50", "Annotation N = 100",
+                                                 "Annotation N = 250", "Annotation N = 500"))]
+
+p9 <- ggplot(sim.bow.results, aes(x = target.k.alpha, y = accuracy.overall)) +
+  geom_smooth(method = "lm", alpha = 0.2, color = "black") + theme_bw() +
+  facet_grid( ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("Overall Accuracy (against true value)") +
+  theme(legend.position="bottom")
+
+p10 <- ggplot(sim.bow.results, aes(x = target.k.alpha, y = f.overall)) +
+  geom_smooth(method = "lm", alpha = 0.2, color = "black") + theme_bw() +
+  facet_grid( ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("Overall F1 score (using true value)") +
+  theme(legend.position="bottom")
+
+pdf("BoW.summary.01.pdf", width = 12, height = 10, paper = "a4r")
+p9 + ggtitle("Overall Classification Quality: Bag of Words") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  p10 + plot_layout(nrow = 2)
+dev.off()
+
+## relative bias
+sim.bow.results[, abs.bias.accuracy := abs((Valdat.accuracy/accuracy.overall) - 1)]
+sim.bow.results[, abs.bias.F1 := abs((Valdat.f/f.overall) - 1)]
+
+p11 <- ggplot(sim.bow.results,
+              aes(x = target.k.alpha, y = abs.bias.accuracy, color = factor(k))) +
+  geom_smooth(method = "lm", alpha = 0.2, aes(color = factor(k))) + theme_bw() +
+  facet_grid( ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("Abs Bias of Accuracy (validation vs. true value)") +
+  theme(legend.position="none") +
+  guides(color = guide_legend(title = "No of coders"))
+
+p12 <- ggplot(sim.bow.results,
+              aes(x = target.k.alpha, y = abs.bias.F1, color = factor(k))) +
+  geom_smooth(method = "lm", alpha = 0.2, aes(color = factor(k))) + theme_bw() +
+  facet_grid( ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("Abs Bias of F1 (validation vs. true value)") +
+  theme(legend.position="bottom") +
+  guides(color = guide_legend(title = "No of coders"))
+
+pdf("BoW.summary.02.pdf", width = 12, height = 10, paper = "a4r")
+p11 + ggtitle("Absolute Degree of Bias Against True Values: Bag of Words") +
+  theme(plot.title = element_text(hjust = 0.5)) + p12 + plot_layout(nrow = 2)
+dev.off()
+
+
+## alternatively,
+sim.bow.results[, bias.accuracy := (Valdat.accuracy/accuracy.overall)]
+sim.bow.results[, bias.F1 := (Valdat.f/f.overall)]
+
+p11_1 <- sim.bow.results[, .(bias.accuracy = median(bias.accuracy, na.rm = T),
+                             lwr = quantile(bias.accuracy, 0.025, na.rm = T),
+                             upr = quantile(bias.accuracy, 0.975, na.rm = T)),
+                         by = c("k", "target.k.alpha", "n.units_f")] %>%
+  ggplot(., aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
+  geom_point(position = position_dodge(0.7)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
+  facet_grid( ~ n.units_f) +
+  xlab("k = No. of coders") + ylab("Relative Bias in Accuracy (validation vs. true value)") +
+  theme(legend.position="none") +
+  guides(color = guide_legend(title = "Target Kripp alpha values"))
+
+p12_1 <- sim.bow.results[, .(bias.F1 = median(bias.F1, na.rm = T),
+                             lwr = quantile(bias.F1, 0.025, na.rm = T),
+                             upr = quantile(bias.F1, 0.975, na.rm = T)),
+                         by = c("k", "target.k.alpha", "n.units_f")] %>%
+  ggplot(., aes(y = bias.F1, x = factor(k), color = factor(target.k.alpha))) +
+  geom_point(position = position_dodge(0.7)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
+  facet_grid( ~ n.units_f) +
+  xlab("k = No. of coders") + ylab("Relative Bias in F1 (validation vs. true value)") +
+  theme(legend.position="bottom") +
+  guides(color = guide_legend(title = "Target Kripp alpha values"))
+
+pdf("BoW.summary.03.pdf", width = 12, height = 10, paper = "a4r")
+p11_1 + ggtitle("Relative Bias Against True Values: Bag of Words") +
+  theme(plot.title = element_text(hjust = 0.5)) + p12_1 + plot_layout(nrow = 2)
+dev.off()
+
+
+## ---------------------------------------------------------- ##
+## Amaong those studies which pass the validation check!      ##
+## cutoff value is the mean of accuracy/F1 score from Study 1 ##
+## ---------------------------------------------------------- ##
+
+sim.bow.results[, results := ifelse(Valdat.accuracy > 0.6487,
+                                    ifelse(accuracy.overall > 0.6487, "True Pos", "False Pos"),
+                                    ifelse(accuracy.overall > 0.6487, "False Neg", "True Neg"))]
+dat_5 <- sim.bow.results[, .(percent = .N / 1000,
+                             bias.accuracy = median(bias.accuracy, na.rm = T),
+                             lwr = quantile(bias.accuracy, 0.025, na.rm = T),
+                             upr = quantile(bias.accuracy, 0.975, na.rm = T)),
+                         by = c("k", "target.k.alpha", "n.units_f", "results")]
+
+pdf("BoW.summary.04.pdf", width = 12, height = 10, paper = "a4r")
+ggplot(dat_5[results %in% c("False Pos", "False Neg"), ],
+       aes(y = percent, x = factor(target.k.alpha), fill = factor(results))) +
+  geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("% Decision Error Based on Accuracy (validation vs. true value)") +
+  theme(legend.position="bottom") +
+  guides(fill = guide_legend(title = "Error types"))
+
+ggplot(dat_5[results %in% c("False Pos", "False Neg") & percent > 0.01, ],
+       aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
+  geom_point(position = position_dodge(0.7)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
+  facet_grid( ~ n.units_f) +
+  xlab("k = No. of coders") + ylab("False Negative (below 1) vs. False Positive (above 1)") +
+  theme(legend.position="bottom") +
+  ggtitle("Relative Bias in Accuracy (validation vs. true value), Among False Results") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  guides(color = guide_legend(title = "Target Kripp alpha values"))
+dev.off()
+
+
+sim.bow.results[, results2 := ifelse(Valdat.f > 0.6429,
+                                     ifelse(f.overall > 0.6429, "True Pos", "False Pos"),
+                                     ifelse(f.overall > 0.6429, "False Neg", "True Neg"))]
+dat_6 <- sim.bow.results[, .(percent = .N / 1000,
+                             bias.F1 = median(bias.F1, na.rm = T),
+                             lwr = quantile(bias.F1, 0.025, na.rm = T),
+                             upr = quantile(bias.F1, 0.975, na.rm = T)),
+                         by = c("k", "target.k.alpha", "n.units_f", "results2")]
+
+pdf("BoW.summary.05.pdf", width = 12, height = 10, paper = "a4r")
+ggplot(dat_6[results2 %in% c("False Pos", "False Neg"), ],
+       aes(y = percent, x = factor(target.k.alpha), fill = factor(results2))) +
+  geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
+  xlab("Target Kripp alpha values") + ylab("% Decision Error Based on F1 (validation vs. true value)") +
+  theme(legend.position="bottom") +
+  guides(fill = guide_legend(title = "Error types"))
+
+ggplot(dat_6[results2 %in% c("False Pos", "False Neg") & percent > 0.01, ],
+       aes(y = bias.F1, x = factor(k), color = factor(target.k.alpha))) +
+  geom_point(position = position_dodge(0.7)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
+  facet_grid( ~ n.units_f) +
+  xlab("k = No. of coders") + ylab("False Negative (below 1) vs. False Positive (above 1)") +
+  theme(legend.position="bottom") +
+  ggtitle("Relative Bias in F1 (validation vs. true value), Among False Results") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  guides(color = guide_legend(title = "Target Kripp alpha values"))
+dev.off()
+
+rm(sim.bow.results, dat_5, dat_6)
