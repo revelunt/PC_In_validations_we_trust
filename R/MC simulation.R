@@ -204,26 +204,26 @@ dev.off()
 sim.naive.results[, abs.bias.accuracy := abs((Valdat.accuracy/accuracy.overall) - 1)]
 sim.naive.results[, abs.bias.F1 := abs((Valdat.f/f.overall) - 1)]
 
-p3 <- ggplot(sim.naive.results,
-             aes(x = target.k.alpha, y = abs.bias.accuracy, color = factor(k))) +
-  geom_smooth(method = "lm", alpha = 0.2, aes(color = factor(k))) + theme_bw() +
-  facet_grid( ~ n.units_f) +
-  xlab("Target Kripp alpha values") + ylab("Abs Bias of Accuracy (validation vs. true value)") +
-  theme(legend.position="none") +
-  guides(color = guide_legend(title = "No of coders"))
-
-p4 <- ggplot(sim.naive.results,
-             aes(x = target.k.alpha, y = abs.bias.F1, color = factor(k))) +
-  geom_smooth(method = "lm", alpha = 0.2, aes(color = factor(k))) + theme_bw() +
-  facet_grid( ~ n.units_f) +
-  xlab("Target Kripp alpha values") + ylab("Abs Bias of F1 (validation vs. true value)") +
-  theme(legend.position="bottom") +
-  guides(color = guide_legend(title = "No of coders"))
-
-pdf("BAYES_summary_02.pdf", width = 12, height = 10, paper = "a4r")
-p3 + ggtitle("Absolute Degree of Bias Against True Values: Naive Bayes") +
-  theme(plot.title = element_text(hjust = 0.5)) + p4 + plot_layout(nrow = 2)
-dev.off()
+# p3 <- ggplot(sim.naive.results,
+#              aes(x = target.k.alpha, y = abs.bias.accuracy, color = factor(k))) +
+#   geom_smooth(method = "lm", alpha = 0.2, aes(color = factor(k))) + theme_bw() +
+#   facet_grid( ~ n.units_f) +
+#   xlab("Target Kripp alpha values") + ylab("Abs Bias of Accuracy (validation vs. true value)") +
+#   theme(legend.position="none") +
+#   guides(color = guide_legend(title = "No of coders"))
+#
+# p4 <- ggplot(sim.naive.results,
+#              aes(x = target.k.alpha, y = abs.bias.F1, color = factor(k))) +
+#   geom_smooth(method = "lm", alpha = 0.2, aes(color = factor(k))) + theme_bw() +
+#   facet_grid( ~ n.units_f) +
+#   xlab("Target Kripp alpha values") + ylab("Abs Bias of F1 (validation vs. true value)") +
+#   theme(legend.position="bottom") +
+#   guides(color = guide_legend(title = "No of coders"))
+#
+# pdf("BAYES_summary_02.pdf", width = 12, height = 10, paper = "a4r")
+# p3 + ggtitle("Absolute Degree of Bias Against True Values: Naive Bayes") +
+#   theme(plot.title = element_text(hjust = 0.5)) + p4 + plot_layout(nrow = 2)
+# dev.off()
 
 
 ## alternatively,
@@ -256,10 +256,10 @@ p4_1 <- sim.naive.results[, .(bias.F1 = median(bias.F1),
   theme(legend.position="bottom") +
   guides(color = guide_legend(title = "Target Kripp alpha values"))
 
-pdf("BAYES_summary_03.pdf", width = 12, height = 10, paper = "a4r")
-p3_1 + ggtitle("Relative Bias Against True Values: Naive Bayes") +
-  theme(plot.title = element_text(hjust = 0.5)) + p4_1 + plot_layout(nrow = 2)
-dev.off()
+# pdf("BAYES_summary_03.pdf", width = 12, height = 10, paper = "a4r")
+# p3_1 + ggtitle("Relative Bias Against True Values: Naive Bayes") +
+#   theme(plot.title = element_text(hjust = 0.5)) + p4_1 + plot_layout(nrow = 2)
+# dev.off()
 
 
 ## ---------------------------------------------------------- ##
@@ -267,36 +267,36 @@ dev.off()
 ## cutoff value is the mean of accuracy/F1 score from Study 1 ##
 ## ---------------------------------------------------------- ##
 
-sim.naive.results[, results := ifelse(Valdat.accuracy > 0.6487,
-                                      ifelse(accuracy.overall > 0.6487, "True Pos", "False Pos"),
-                                      ifelse(accuracy.overall > 0.6487, "False Neg", "True Neg"))]
-dat_1 <- sim.naive.results[!is.na(bias.accuracy), .(percent = .N / 1000,
-                               bias.accuracy = median(bias.accuracy, na.rm = T),
-                               lwr = quantile(bias.accuracy, 0.025, na.rm = T),
-                               upr = quantile(bias.accuracy, 0.975, na.rm = T)),
-                           by = c("k", "target.k.alpha", "n.units_f", "results")]
+# sim.naive.results[, results := ifelse(Valdat.accuracy > 0.6487,
+#                                       ifelse(accuracy.overall > 0.6487, "True Pos", "False Pos"),
+#                                       ifelse(accuracy.overall > 0.6487, "False Neg", "True Neg"))]
+# dat_1 <- sim.naive.results[!is.na(bias.accuracy), .(percent = .N / 1000,
+#                                bias.accuracy = median(bias.accuracy, na.rm = T),
+#                                lwr = quantile(bias.accuracy, 0.025, na.rm = T),
+#                                upr = quantile(bias.accuracy, 0.975, na.rm = T)),
+#                            by = c("k", "target.k.alpha", "n.units_f", "results")]
 
-pdf("BAYES_summary_04.pdf", width = 12, height = 10, paper = "a4r")
-ggplot(dat_1[results %in% c("False Pos", "False Neg"), ],
-       aes(y = percent, x = factor(target.k.alpha), fill = factor(results))) +
-  geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
-  xlab("Target Kripp alpha values") + ylab("% Decision Error Based on Accuracy (validation vs. true value)") +
-  ggtitle("% Decision error, Naive Bayes") + theme(plot.title = element_text(hjust = 0.5)) +
-  theme(legend.position="bottom") + guides(fill = guide_legend(title = "Error types"))
-
-ggplot(dat_1[results %in% c("False Pos", "False Neg") & percent > 0.01, ],
-       aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
-  geom_point(position = position_dodge(0.7)) +
-  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
-  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
-  facet_grid( ~ n.units_f) +
-  xlab("k = No. of coders") + ylab("False Negative (below 1) vs. False Positive (above 1)") +
-  theme(legend.position="bottom") +
-  ggtitle("Relative Bias in Accuracy (validation vs. true value), Among False Results") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  guides(color = guide_legend(title = "Target Kripp alpha values"))
-dev.off()
-
+# pdf("BAYES_summary_04.pdf", width = 12, height = 10, paper = "a4r")
+# ggplot(dat_1[results %in% c("False Pos", "False Neg"), ],
+#        aes(y = percent, x = factor(target.k.alpha), fill = factor(results))) +
+#   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
+#   xlab("Target Kripp alpha values") + ylab("% Decision Error Based on Accuracy (validation vs. true value)") +
+#   ggtitle("% Decision error, Naive Bayes") + theme(plot.title = element_text(hjust = 0.5)) +
+#   theme(legend.position="bottom") + guides(fill = guide_legend(title = "Error types"))
+#
+# ggplot(dat_1[results %in% c("False Pos", "False Neg") & percent > 0.01, ],
+#        aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
+#   geom_point(position = position_dodge(0.7)) +
+#   geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
+#   geom_hline(yintercept = 1, color = "grey", linetype = 2) +
+#   facet_grid( ~ n.units_f) +
+#   xlab("k = No. of coders") + ylab("False Negative (below 1) vs. False Positive (above 1)") +
+#   theme(legend.position="bottom") +
+#   ggtitle("Relative Bias in Accuracy (validation vs. true value), Among False Results") +
+#   theme(plot.title = element_text(hjust = 0.5)) +
+#   guides(color = guide_legend(title = "Target Kripp alpha values"))
+# dev.off()
+#
 
 sim.naive.results[, results2 := ifelse(Valdat.f > 0.6429,
                                        ifelse(f.overall > 0.6429, "True Pos", "False Pos"),
@@ -315,17 +315,8 @@ ggplot(dat_2[results2 %in% c("False Pos", "False Neg"), ],
   ggtitle("% Decision error, Naive Bayes") + theme(plot.title = element_text(hjust = 0.5)) +
   theme(legend.position="bottom") + guides(fill = guide_legend(title = "Error types"))
 
-ggplot(dat_2[results2 %in% c("False Pos", "False Neg") & percent > 0.01, ],
-       aes(y = bias.F1, x = factor(k), color = factor(target.k.alpha))) +
-  geom_point(position = position_dodge(0.7)) +
-  geom_errorbar(aes(ymin = lwr, ymax = upr), position = position_dodge(0.7)) +
-  geom_hline(yintercept = 1, color = "grey", linetype = 2) +
-  facet_grid( ~ n.units_f) +
-  xlab("k = No. of coders") + ylab("False Negative (below 1) vs. False Positive (above 1)") +
-  theme(legend.position="bottom") +
-  ggtitle("Relative Bias in F1 (validation vs. true value), Among False Results") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  guides(color = guide_legend(title = "Target Kripp alpha values"))
+p4_1 + ggtitle("Relative Bias in F1 (validation vs. true value)") +
+  theme(plot.title = element_text(hjust = 0.5))
 dev.off()
 
 
