@@ -270,7 +270,7 @@ dev.off()
 sim.naive.results[, results := ifelse(Valdat.accuracy > 0.6487,
                                       ifelse(accuracy.overall > 0.6487, "True Pos", "False Pos"),
                                       ifelse(accuracy.overall > 0.6487, "False Neg", "True Neg"))]
-dat_1 <- sim.naive.results[, .(percent = .N / 1000,
+dat_1 <- sim.naive.results[!is.na(bias.accuracy), .(percent = .N / 1000,
                                bias.accuracy = median(bias.accuracy, na.rm = T),
                                lwr = quantile(bias.accuracy, 0.025, na.rm = T),
                                upr = quantile(bias.accuracy, 0.975, na.rm = T)),
@@ -301,7 +301,7 @@ dev.off()
 sim.naive.results[, results2 := ifelse(Valdat.f > 0.6429,
                                        ifelse(f.overall > 0.6429, "True Pos", "False Pos"),
                                        ifelse(f.overall > 0.6429, "False Neg", "True Neg"))]
-dat_2 <- sim.naive.results[, .(percent = .N / 1000,
+dat_2 <- sim.naive.results[!is.na(bias.F1), .(percent = .N / 1000,
                                bias.F1 = median(bias.F1, na.rm = T),
                                lwr = quantile(bias.F1, 0.025, na.rm = T),
                                upr = quantile(bias.F1, 0.975, na.rm = T)),
@@ -447,7 +447,7 @@ dev.off()
 sim.binomial.results[, results := ifelse(Valdat.accuracy > 0.6487,
                                          ifelse(accuracy.overall > 0.6487, "True Pos", "False Pos"),
                                          ifelse(accuracy.overall > 0.6487, "False Neg", "True Neg"))]
-dat_3 <- sim.binomial.results[, .(percent = .N / 1000,
+dat_3 <- sim.binomial.results[!is.na(bias.accuracy), .(percent = .N / 1000,
                                   bias.accuracy = median(bias.accuracy, na.rm = T),
                                   lwr = quantile(bias.accuracy, 0.025, na.rm = T),
                                   upr = quantile(bias.accuracy, 0.975, na.rm = T)),
@@ -478,7 +478,7 @@ dev.off()
 sim.binomial.results[, results2 := ifelse(Valdat.f > 0.6429,
                                          ifelse(f.overall > 0.6429, "True Pos", "False Pos"),
                                          ifelse(f.overall > 0.6429, "False Neg", "True Neg"))]
-dat_4 <- sim.binomial.results[, .(percent = .N / 1000,
+dat_4 <- sim.binomial.results[!is.na(bias.F1), .(percent = .N / 1000,
                                   bias.F1 = median(bias.F1, na.rm = T),
                                   lwr = quantile(bias.F1, 0.025, na.rm = T),
                                   upr = quantile(bias.F1, 0.975, na.rm = T)),
@@ -619,7 +619,7 @@ dev.off()
 sim.bow.results[, results := ifelse(Valdat.accuracy > 0.6487,
                                     ifelse(accuracy.overall > 0.6487, "True Pos", "False Pos"),
                                     ifelse(accuracy.overall > 0.6487, "False Neg", "True Neg"))]
-dat_5 <- sim.bow.results[, .(percent = .N / 1000,
+dat_5 <- sim.bow.results[!is.na(bias.accuracy), .(percent = .N / 1000,
                              bias.accuracy = median(bias.accuracy, na.rm = T),
                              lwr = quantile(bias.accuracy, 0.025, na.rm = T),
                              upr = quantile(bias.accuracy, 0.975, na.rm = T)),
@@ -650,7 +650,7 @@ dev.off()
 sim.bow.results[, results2 := ifelse(Valdat.f > 0.6429,
                                      ifelse(f.overall > 0.6429, "True Pos", "False Pos"),
                                      ifelse(f.overall > 0.6429, "False Neg", "True Neg"))]
-dat_6 <- sim.bow.results[, .(percent = .N / 1000,
+dat_6 <- sim.bow.results[!is.na(bias.F1), .(percent = .N / 1000,
                              bias.F1 = median(bias.F1, na.rm = T),
                              lwr = quantile(bias.F1, 0.025, na.rm = T),
                              upr = quantile(bias.F1, 0.975, na.rm = T)),

@@ -1,0 +1,71 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+         \captionsetup[figure]{labelfont=bf,textfont=normalfont,singlelinecheck=on}
+         \centering
+         \includegraphics[trim={0.2cm 0.2cm 0.2cm 0.2cm}, clip, width=\columnwidth]{Results/overall_accuracy.pdf}
+         \captionsetup{format=hang}
+         \caption{Overall classification accuracy against true value across conditions (Reference line is overall mean).}
+         \label{fig:Figure1}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\captionsetup[figure]{labelfont={bf,it}}
+    \centering
+    \begin{subfigure}[t]{0.95\textwidth}
+        \centering
+        \includegraphics[clip, width=\linewidth, page = 1]{Results/BAYES_summary_05.pdf}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.95\textwidth}
+        \centering
+        \captionsetup{font=small}
+        \includegraphics[clip, width=\linewidth, page = 2]{Results/BAYES_summary_05.pdf}
+    \end{subfigure}
+
+    \captionsetup{format=hang}
+    \caption{Percentage of decision error and relative bias in F1 scores (over 1000 Simulations per each scenario), Naive Bayes classifier.}
+    \label{fig:Figure2}
+    \captionsetup{font=small}
+    \caption*{Note: Upper panel = Proportion of cases (each simulation run) incorrectly conclude on classification performances. Lower panel = Relative bias in F1 scores among misclassified studies.}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\captionsetup[figure]{labelfont={bf,it}}
+    \centering
+    \begin{subfigure}[t]{0.95\textwidth}
+        \centering
+        \includegraphics[clip, width=\linewidth, page = 1]{Results/GLM_summary_05.pdf}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.95\textwidth}
+        \centering
+        \includegraphics[clip, width=\linewidth, page = 2]{Results/GLM_summary_05.pdf}
+    \end{subfigure}
+
+    \captionsetup{format=hang}
+    \caption{Percentage of decision error and relative bias in F1 scores (over 1000 Simulations per each scenario), GLM classifier.}
+    \label{fig:Figure3}
+    \captionsetup{font=small}
+    \caption*{Note: Upper panel = Proportion of cases (each simulation run) incorrectly conclude on classification performances. Lower panel = Relative bias in F1 scores among misclassified studies.}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\captionsetup[figure]{labelfont={bf,it}}
+    \centering
+    \begin{subfigure}[t]{0.95\textwidth}
+        \centering
+        \includegraphics[clip, width=\linewidth, page = 1]{Results/BoW_summary_05.pdf}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.95\textwidth}
+        \centering
+        \includegraphics[clip, width=\linewidth, page = 2]{Results/BoW_summary_05.pdf}
+    \end{subfigure}
+
+    \captionsetup{format=hang}
+    \caption{Percentage of decision error and relative bias in F1 scores (over 1000 Simulations per each scenario), Bag-of-words.}
+    \label{fig:Figure4}
+    \captionsetup{font=small}
+    \caption*{Note: Upper panel = Proportion of cases (each simulation run) incorrectly conclude on classification performances. Lower panel = Relative bias in F1 scores among misclassified studies.}
+\end{figure*}

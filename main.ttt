@@ -1,0 +1,22 @@
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+[!htbp] \centering
+\begin{minipage}{1.1\textwidth}
+    \centering
+  \caption{\\ Decision scenarios based on observed vs. true level of classification performance.}
+  \label{tab:Table1}
+        \centering
+  \begin{tabular}{ ccc}
+\toprule
+      \multicolumn{1}{c}{} &
+      \multicolumn{2}{c}{\textbf{True classification performance}} \\
+\cline{2-3}
+ & Below threshold & Above threshold \\
+\hline \\[-1.8ex]
+  \textbf{Observed} & & \\
+ Below threshold & True Negative & False Negative (Type II) \\
+ Above threshold & False Positive (Type I) & True Positive \\
+\hline \\[-1.8ex]
+\end{tabular}
+  \end{minipage}
+\end{table*}
