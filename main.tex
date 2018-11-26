@@ -104,7 +104,7 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
     
     Although a specific method and application of automatic content analysis comes in many flavors \parencites[for a broad overview, see:][]{Boumans_Trilling_2016, grimmer2013text}, they are all based on similar principles: they all aim to identify and classify the predefined categories (i.e., a discovery and measurement).\footnote{In this respect, unsupervised learning methods are most clearly distinguishable from the other two: while unsupervised learning methods generally aim to inductively \enquote{discover} categories without human inputs, dictionary-based or supervised learning methods assume (already) well-defined categories. For a detailed discussion about the differences across methods, see \citeauthor{grimmer2013text} (\citeyear{grimmer2013text}) or \citeauthor{Boumans_Trilling_2016} (\citeyear{Boumans_Trilling_2016}).} A simple dictionary approach generally relies on the pre-defined “dictionary” of words or phrases by a researcher -- ranging from simple keywords lists to complex Boolean expression, syntactic parsers, or even regular expressions -- where the computer counts the number of such instances in a given document. Assuming a given dictionary is appropriate to be applied in a given domain \parencite{Boumans_Trilling_2016, gonzalez2015signals}, a researcher applies the dictionary on a set of documents, typically to a word-level, and then resulting \enquote{scores} are aggregated into the document level (e.g., a news article or tweet). This \enquote{dictionary} therefore represents a explicit coding rule to be applied by an algorithm, where (classified) categories may represent the visibility of a topic (i.e., the presence of the absence of a category) or a net tonality (positive vs. negative) of an article \parencites[e.g.,][]{Aaldering2016, YoungSoroka2012, boomgaaden2009, gonzalez2015signals, Rooduijn2011}. 
     
-    For supervised methods, specific coding rules in manual annotations (as an input to an algorithm) are, in general, rarely explicitly articulated. Yet the algorithm takes such implicit judgments derived from manual coding as the point of reference, and tries to infer the features of data that best classify the text into different predefined categories. Currently, there exists a variety of supervised learning algorithms available -- ranging from a simple regression framework or Naive Bayes to more sofisticated methods such as Support Vector Machines (SVM) or random decision forest \parencites[for an overview of different algorithms commonly used in social science applications, see][]{hindman2015building}. This machine-learning process may involve many iterations of \enquote{training} and comparisons to some gold-standard materials in order to achieve a desired level of a classification quality \parencites[e.g.,][]{scharkow2013thematic}. If the algorithmic coding is later determined to be sufficient enough in capturing the underlying quantities of interest through such a \enquote{training,} then a researcher applies such \enquote{trained} coding rules to a larger corpus of unseen documents to perform their analyses \parencites[e.g.,][]{Wouter2008News, burscher2015using, burscher2014teaching, scharkow2013thematic, gonzalez2015signals}.    
+    For supervised methods, specific coding rules in manual annotations (as an input to an algorithm) are, in general, rarely explicitly articulated. Yet the algorithm takes such implicit judgments derived from manual coding as the point of reference, and tries to infer the features of data that best classify the text into different predefined categories. Currently, there exists a variety of supervised learning algorithms available -- ranging from a simple regression framework or Naive Bayes to more sofisticated methods such as Support Vector Machines (SVM) or random decision forest \parencites[for an overview of different algorithms commonly used in social science applications, see][]{hindman2015building}. This machine-learning process may involve many iterations of \enquote{training} and comparisons to some gold-standard materials in order to achieve a desired level of a classification quality \parencites[e.g.,][]{scharkow2013thematic}. If the algorithmic coding is later determined to be sufficient enough in capturing the underlying quantities of interest through such a \enquote{training,} then a researcher applies such \enquote{trained} coding rules to a larger corpus of unseen documents to perform their analyses \parencites[e.g.,][]{burscher2015using, burscher2014teaching, scharkow2013thematic, gonzalez2015signals}.    
     
 \section{The Use of Human Coding in Cross-Validation of Automated Content Analysis}
     
@@ -202,7 +202,7 @@ As a model check, we first investigate the overall classification accuracy (agai
          \centering
          \includegraphics[trim={0.2cm 0.2cm 0.2cm 0.2cm}, clip, width=\columnwidth]{Results/overall_accuracy.pdf} 
          \captionsetup{format=hang}
-         \caption{Overall classification accuracy against true value across conditions (Rrference line is overall mean).} 
+         \caption{Overall classification accuracy against true value across conditions (Reference line is overall mean).} 
          \label{fig:Figure1}
 \end{figure}    
 
@@ -215,9 +215,9 @@ Next, we examine indirect consequences of relying on imperfect human coded mater
 \begin{table}[!htbp] \centering 
 	\begin{minipage}{1.1\textwidth}
     \centering
-  \caption{\\ Decision scenarios based on observed vs. true level of classification performance} 
+  \caption{\\ Decision scenarios based on observed vs. true level of classification performance.} 
   \label{tab:Table1} 
-    \centering
+        \centering
   \begin{tabular}{ ccc}
 \toprule
       \multicolumn{1}{c}{} &
@@ -254,7 +254,7 @@ In order to illuminate the potential consequences of relying imperfect data in m
     \caption{Percentage of decision error and relative bias in F1 scores (over 1000 Simulations per each scenario), Naive Bayes classifier.} 
     \label{fig:Figure2}
     \captionsetup{font=small}
-    \caption*{Upper panel: Proportion of cases (each simulation run) incorrectly conclude on classification performances. Lower panel: Relative bias in F1 scores among misclassified studies.}
+    \caption*{Note: Upper panel = Proportion of cases (each simulation run) incorrectly conclude on classification performances. Lower panel = Relative bias in F1 scores among misclassified studies.}
 \end{figure}          
 
 % Figure 3 proportion of decision error, GLM
@@ -274,7 +274,7 @@ In order to illuminate the potential consequences of relying imperfect data in m
     \caption{Percentage of decision error and relative bias in F1 scores (over 1000 Simulations per each scenario), GLM classifier.} 
     \label{fig:Figure3}
     \captionsetup{font=small}
-    \caption*{Upper panel: Proportion of cases (each simulation run) incorrectly conclude on classification performances. Lower panel: Relative bias in F1 scores among misclassified studies.}
+    \caption*{Note: Upper panel = Proportion of cases (each simulation run) incorrectly conclude on classification performances. Lower panel = Relative bias in F1 scores among misclassified studies.}
 \end{figure}     
 
 % Figure 4 proportion of decision error, BoW
@@ -294,16 +294,23 @@ In order to illuminate the potential consequences of relying imperfect data in m
     \caption{Percentage of decision error and relative bias in F1 scores (over 1000 Simulations per each scenario), Bag-of-words.} 
     \label{fig:Figure4}
     \captionsetup{font=small}
-    \caption*{Upper panel: Proportion of cases (each simulation run) incorrectly conclude on classification performances. Lower panel: Relative bias in F1 scores among misclassified studies.}
+    \caption*{Note: Upper panel = Proportion of cases (each simulation run) incorrectly conclude on classification performances. Lower panel = Relative bias in F1 scores among misclassified studies.}
 \end{figure}     
 
-
+As can be seen in Figure \ref{fig:Figure2}, it appears that using more \enquote{high-quality} materials for post-hoc validation have obvious and discernible consequences in the evaluation of classification quality of the automated procedures. Among 1000 replication of each scenarios, all of our experimental factors appears to decrease the decision error when using observed level of F1 scores to approximate the true (unknown) F1 score. The leftmost upper panel (2 coders, with 50 independent annotations per each coder) shows that in worst-case scenarios, using only two coders with handful of materials, coupled with sub-optimal reliability (K alpha of 0.5) produces approximately 30\% of study cases that incorrectly estimate the true F1 scores. Under the same combination of total coders and independent annotations per each coder, improving reliability at best marginally decreases the decision error (from     
 
 
 \section{Conclusion and Discussion: TBA}
 
     
-    The aims of the current paper were twofold; we first wanted to provide a systematic overview of how the matter of validation is approached by the field at large, and second --- we wanted to provide simulation-based evidence of how various decisions taken in the training and validation phases of a study that relies on machine learning applications can have widely different implications. To this end, we first presented the results of a meta study of relevant journal articles, as well as designed a set of Monte Carlo simulations. The results of this analysis confirm that the field of automated text analysis is still in its infancy. A common agreement upon quality standards is still missing – among authors as well as reviewers or editors. Nevertheless, it is maturing just like the field of manual content analysis was ten years ago.
+    The aims of the current paper were twofold; we first wanted to provide a systematic overview of how the matter of validation is approached by the field at large, and second --- we wanted to provide simulation-based evidence of how various decisions taken in the training and validation phases of a study that relies on machine learning applications can have widely different implications. To this end, we first presented the results of a meta study of relevant journal articles, as well as designed a set of Monte Carlo simulations.
+    
+    The results from the first study show that, while automated text analysis methods are widely used in throughout social sciences, there is still strikingly little consistency in how various stages of these approaches, and more specifically, the validation of these methods, are reported. Very often, studies do not report \textit{any} validation metrics when using machine learning applications, or, when the do, these metrics are generally not consistent. 
+    
+    
+    Coupled with the results from our second study (simulation-based inference), we find these insights to be rather concerning, since it is now becomes evident that the decisions that taken by the researchers throughout the research design play a huge role in the quality of the results.
+    
+    The results of this analysis confirm that the field of automated text analysis is still in its infancy. A common agreement upon quality standards is still missing – among authors as well as reviewers or editors. Nevertheless, it is maturing just like the field of manual content analysis was ten years ago.
     
     
     
