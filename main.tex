@@ -234,17 +234,69 @@ Next, we examine indirect consequences of relying on imperfect human coded mater
 \end{table} 
 
 In order to illuminate the potential consequences of relying imperfect data in making decisions about the true, unknown classification performances of the proposed automated procedure, we divide our entire simulations into four mutually exclusive categories, as in Table \ref{tab:Table1}, based on the cross-tabulation of \enquote{observed} F1 scores (from validation materials) against true F1 scores (based on the true values of y). We first present the proportion of simulation cases which incorrectly conclude about the overall classification quality based on observed quality. Second, we further present the degree of relative \enquote{bias} within such incorrectly concluded cases --- defined as the $ F1_{validation}/F1_{true} $, where F1 score is a weighted average of the precision and recall --- which captures the degree of under- or over-estimation of (true) overall F1 scores against observed F1 scores based on human validation materials. For this application, we choose the cutoff value of F1 score to be 0.6478, which is just the average F1 score reported in Study 1.
-\centerline{ -- Figure \ref{fig:Figure2} about here -- }    
+\centerline{ -- Figure \ref{fig:Figure2} to Figure \ref{fig:Figure4} about here -- }    
 
-% Figure 2 proportion of decision error
+% Figure 2 proportion of decision error, Naive Bayes
 \begin{figure}
-         \captionsetup[figure]{labelfont=bf,textfont=normalfont,singlelinecheck=on}
-         \centering
-         \includegraphics[page=1, trim={0cm 0cm 0cm 0cm}, clip, width=1.05\columnwidth]{Results/BAYES_summary_05.pdf} 
-         \captionsetup{format=hang}
-         \caption{Proportion of cases (each simulation run) incorrectly conclude on classification performances.} 
-         \label{fig:Figure2}
-\end{figure}    
+\captionsetup[figure]{labelfont={bf,it}}
+    \centering
+    \begin{subfigure}[t]{0.95\textwidth}
+        \centering
+        \includegraphics[clip, width=\linewidth, page = 1]{Results/BAYES_summary_05.pdf} 
+    \end{subfigure}
+    \begin{subfigure}[t]{0.95\textwidth}
+        \centering
+        \captionsetup{font=small}
+        \includegraphics[clip, width=\linewidth, page = 2]{Results/BAYES_summary_05.pdf} 
+    \end{subfigure}
+    
+    \captionsetup{format=hang}
+    \caption{Percentage of decision error and relative bias in F1 scores (over 1000 Simulations per each scenario), Naive Bayes classifier.} 
+    \label{fig:Figure2}
+    \captionsetup{font=small}
+    \caption*{Upper panel: Proportion of cases (each simulation run) incorrectly conclude on classification performances. Lower panel: Relative bias in F1 scores among misclassified studies.}
+\end{figure}          
+
+% Figure 3 proportion of decision error, GLM
+\begin{figure}
+\captionsetup[figure]{labelfont={bf,it}}
+    \centering
+    \begin{subfigure}[t]{0.95\textwidth}
+        \centering
+        \includegraphics[clip, width=\linewidth, page = 1]{Results/GLM_summary_05.pdf} 
+    \end{subfigure}
+    \begin{subfigure}[t]{0.95\textwidth}
+        \centering
+        \includegraphics[clip, width=\linewidth, page = 2]{Results/GLM_summary_05.pdf} 
+    \end{subfigure}
+    
+    \captionsetup{format=hang}
+    \caption{Percentage of decision error and relative bias in F1 scores (over 1000 Simulations per each scenario), GLM classifier.} 
+    \label{fig:Figure3}
+    \captionsetup{font=small}
+    \caption*{Upper panel: Proportion of cases (each simulation run) incorrectly conclude on classification performances. Lower panel: Relative bias in F1 scores among misclassified studies.}
+\end{figure}     
+
+% Figure 4 proportion of decision error, BoW
+\begin{figure}
+\captionsetup[figure]{labelfont={bf,it}}
+    \centering
+    \begin{subfigure}[t]{0.95\textwidth}
+        \centering
+        \includegraphics[clip, width=\linewidth, page = 1]{Results/BoW_summary_05.pdf} 
+    \end{subfigure}
+    \begin{subfigure}[t]{0.95\textwidth}
+        \centering
+        \includegraphics[clip, width=\linewidth, page = 2]{Results/BoW_summary_05.pdf} 
+    \end{subfigure}
+    
+    \captionsetup{format=hang}
+    \caption{Percentage of decision error and relative bias in F1 scores (over 1000 Simulations per each scenario), Bag-of-words.} 
+    \label{fig:Figure4}
+    \captionsetup{font=small}
+    \caption*{Upper panel: Proportion of cases (each simulation run) incorrectly conclude on classification performances. Lower panel: Relative bias in F1 scores among misclassified studies.}
+\end{figure}     
+
 
 
 
