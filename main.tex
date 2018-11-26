@@ -228,38 +228,13 @@ We first investigate the overall classification accuracy (against true value) as
 \captionsetup[figure]{labelfont={bf,it}}
 \captionsetup[subfigure]{labelfont=bf,textfont=normalfont,singlelinecheck=on}
     \centering
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{draft/network_plots1.pdf} 
-        \caption*{A. Erdos-Renyi random network}
-        \label{fig1:random}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{draft/network_plots2.pdf} 
-        \caption*{B. Chain network} \label{fig1:tree}
-    \end{subfigure}
-
-    \vspace{1cm}
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{draft/network_plots3.pdf} 
-        \caption*{C. Small-world network absent homophily} \label{fig1:nohomophily}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{draft/network_plots4.pdf} 
-        \caption*{D. Baseline small-world network} \label{fig1:smallworld}
-    \end{subfigure}
-    
+     \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{Results/overall.accuracy.pdf} 
     \vspace{1cm}
     \captionsetup{format=hang}
-    \caption{A cross-sectional view of simulated networks from different network topologies.} 
+    \caption{Overall Classifiation Accuracy (against true value) as a function of target K alpha value in validation material} 
     \label{fig:Figure1}
     \captionsetup{font=small}
-    \caption*{Note: Colored nodes represent nodes that have at least one connection with their neighbor (Red = Republicans, Blue = Democrats) while isolates at given time point was suppressed in visualization. A Erdos-Renyi (ER) random network ( = A) assumes a homogeneous probability of creating and dropping ties across all nodes conditional on observed density. A chain-like network ( = B) has more longer chains than the ER random network while lacks triangle-like structure due to constrains on degrees (less than three). While two small-world network has more star-like structure than others, our baseline small-world network (= D) is more homophilous than competing specification in its counterpart without homophily (= C), as can be seen in Table \ref{tab:Table1}.} 
+    \caption*{Note: Reference line is overall mean.} 
 \end{figure}    
 
 \section{Conclusion and Discussion: TBA}
