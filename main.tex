@@ -204,15 +204,15 @@ This means that $y$ becomes effectively a function of the simple sum of chosen t
 
     \subsection{Human Coding Stage}
     
-    We specified several typical scenarios of how the true data would be coded by human coders for the purpose of validation of automated procedures. In typical automatic content analysis applications, at least two or more number of trained human coders are assigned to a common, small set of sample documents for manual coding, and independently code such documents for intercoder reliability testing. This process is repeated until the level of intercoder reliability is deemed satisfactory (typically Krippendorff’s alpha equal or greater than 0.7). Theoretically, achieving the satisfactory level of reliability means that coders can be treated as interchangeable to each other \parencite{krippendorff2004reliability}, therefore any observations produced by a single human coder in validation materials are, on average, likely to be similar to each other proportional to the chosen degree of intercoder reliability. Once such a coder interchangeability is ensured, the common practice is that remaining documents (for validation materials) are evenly --- typically by some convenient standard but non randomly --- divided and only coded by a single coder \parencite{grimmer2018unreliability}. While the total number of manual annotations produced by such human coders greatly vary across studies, the practice of evenly (but not randomly) dividing the validation materials across coders effectively means that any potential coder idiosyncrasies are just ignored while potential coder idiosyncrasies are not randomly distributed across manual annotations produced for validation materials.      
+    We specified several typical scenarios of how the true data would be coded by human coders for the purpose of validation of automated procedures. In typical automatic content analysis applications, at least two or more number of trained human coders are assigned to a common, small set of sample documents for manual coding, and independently code such documents for intercoder reliability testing. This process is repeated until the level of intercoder reliability is deemed satisfactory (typically Krippendorff’s alpha equal or greater than 0.7). Theoretically, achieving the satisfactory level of reliability means that coders can be treated as interchangeable to each other \parencite{krippendorff2004reliability}, therefore any observations produced by a single human coder in validation materials are, on average, likely to be similar to each other proportional to the chosen degree of intercoder reliability. Once such a coder interchangeability is ensured, the common practice is that remaining documents (for validation materials) are evenly --- typically by some convenient standard but non randomly --- divided and only coded by a single coder \parencite{grimmer2018unreliability}. While the total number of manual annotations produced by such human coders greatly vary across studies, the practice of evenly (but not randomly) dividing the validation materials across coders effectively means that any potential coder idiosyncrasies are just ignored while such idiosyncrasies are not randomly distributed across manual annotations produced for validation materials.      
     
     Following the typical application in this area as sketched above, we assume that only a small fraction of data (i.e., held-out sample) is analyzed manually by a varying number of human coders for the purpose of providing a cross-validation result (against machine algorithms) that informs the performance of such automated procedures. Following this general setup, we specified few important factors that may affect the quality of the “golden standard” and therefore of the overall performance evaluation of later automated content algorithms. Those factors include: the number of human coders (k = 2, 4, 7, 10), the predetermined target values of intercoder reliability metric (Krippendorff’s alpha = 0.5, 0.6, 0.7, 0.8, 0.9), as well as the number of articles that each coder had to analyze in order to produce final human-coded data (the number of annotation per coder, n = 50, 100, 250, 500). Although somewhat arbitrary, these numbers were chosen to reflect typical content analysis procedures and their variations commonly carried out in social science applications, as evidenced in our Study 1. 
     
-    In all scenarios, human coders classify a given observation as ``1" (e.g., a news article contains the quantity of interest, such as a certain actor, frame, or tonality) or ``0" (e.g., does not contain this quantity of interest). This human coding ($\hat{y}$) can be in principle either correct or incorrect against the (unknown) “true” value of $y$, therefore behaviors of human coders were modeled by a Binomial distribution with varying probability of successfully categorizing the true data. The heterogeneity in each of the coders’ coding behaviors (e.g., expertise or bias) was also modelled by a beta distribution with varying shape hyperparameters, which effectively enables us to simulate a situation in which where a certain coders produce more “correct” judgment ($\hat{y} = y$) whereas other coders produce more “false” judgment ($\hat{y} \neq y$), yet the overall human coding pattern at chosen level of a beta distribution parameters would produce an acceptable level of target reliability coefficient (e.g., Krippendorff’s Alpha = 0.7). Depending on specific application (dictionary-based vs. supervised learning), the output (coded data) from this stage is then used as either a post-hoc validation data or as an input for the later automated classification stage. 
+    In all scenarios, human coders classify a given observation as ``1" (e.g., a news article contains the quantity of interest, such as a certain actor, frame, or tonality) or ``0" (e.g., does not contain this quantity of interest). This human coding ($\hat{y}$) can be in principle either correct or incorrect against the (unknown) “true” value of $y$, therefore behaviors of human coders were modeled by a Binomial distribution with varying probability of successfully categorizing the true data. The heterogeneity in each of the coders’ coding behaviors (e.g., expertise or bias) was also modelled by a beta distribution with varying shape (using predefined hyperparameters for each target reliability levels), which effectively enables us to simulate a situation in which where a certain coders produce more “correct” judgment ($\hat{y} = y$) whereas other coders produce more “false” judgment ($\hat{y} \neq y$). Yet the overall human annotation patterns at chosen level of a beta distribution parameters were ensured to produce an acceptable level of target reliability coefficient (e.g., Krippendorff’s Alpha = 0.7). Depending on specific application (dictionary-based vs. supervised learning), the output (coded data) from this stage is then used as either a post-hoc validation data or as an input for the later automated classification stage. 
     
     \subsection{Algorithm-based Classification Stage}
     
-    Following the typical application, we assumed a researcher uses a certain classification algorithm to predict the values of ($y = \hat{y}$) in each of the observations. For this purpose, we used three different classification algorithms – binomial GLM, Naïve Bayes (NB) classifier, and a bag-of-words dictionary approach. Although these are not exhaustive, these methods are among the most frequently utilized applications in automated contents analysis, especially coupled with human validation of such algorithms, as can be seen in \textcolor{red}{Table 1 in our Study 1 result}. 
+    Following the typical application, we assumed a researcher uses a certain classification algorithm to predict the values of ($\hat{y}$) in each of the observations. For this purpose, we used three different classification algorithms – binomial GLM, Naïve Bayes (NB) classifier, and a bag-of-words dictionary approach. Although these are not exhaustive, these methods are among the most frequently utilized applications in automated contents analysis, especially coupled with human validation of such algorithms, as can be seen in \textcolor{red}{Table 1 in our Study 1 result}. 
     
     Typically in a real-world scenario, researchers validate the computer-based coding based on a held-out human coded test set post hoc (for a bag-of-words dictionary approach), or use such human coded data to develop prediction algorithms and then “scale up” the automated coding process (for supervised learning, such as binomial GLM or Naïve Bayes). This means that we can also systematically compare different levels of precision, recall, and F1 scores (that are evaluated at different levels of human benchmark scores) against the true standard. For this purpose, we compare the estimated $\hat{y}$ values from scaled-up automated coding to the true values of y. Admittedly this would be impossible for practical applications, since the true value y would never be known. However by doing so we can precisely estimate the relative bias and coverage of proposed methods when using imperfect human coding as \enquote{gold standard.} Also by doing so, we also can compare how the overall accuracy is diminished from one step to another based on which factors. 
     
@@ -220,7 +220,47 @@ This means that $y$ becomes effectively a function of the simple sum of chosen t
     
 \section{Simulation Results}
 
-TBA
+We first investigate the overall classification accuracy (against true value) as a function of target reliability level in validation materials, controlling for overall prevalence of the quantity of interest (e.g., a news article contains the quantity of interest, such as a certain actor, frame, or tonality). 
+\centerline{ -- Table \ref{tab:Table1} and Figure \ref{fig:Figure1} about here -- }    
+    
+% Figure 1: Plots of static (cross-sectional) networks from simulations    
+\begin{figure}
+\captionsetup[figure]{labelfont={bf,it}}
+\captionsetup[subfigure]{labelfont=bf,textfont=normalfont,singlelinecheck=on}
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{draft/network_plots1.pdf} 
+        \caption*{A. Erdos-Renyi random network}
+        \label{fig1:random}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{draft/network_plots2.pdf} 
+        \caption*{B. Chain network} \label{fig1:tree}
+    \end{subfigure}
+
+    \vspace{1cm}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{draft/network_plots3.pdf} 
+        \caption*{C. Small-world network absent homophily} \label{fig1:nohomophily}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{draft/network_plots4.pdf} 
+        \caption*{D. Baseline small-world network} \label{fig1:smallworld}
+    \end{subfigure}
+    
+    \vspace{1cm}
+    \captionsetup{format=hang}
+    \caption{A cross-sectional view of simulated networks from different network topologies.} 
+    \label{fig:Figure1}
+    \captionsetup{font=small}
+    \caption*{Note: Colored nodes represent nodes that have at least one connection with their neighbor (Red = Republicans, Blue = Democrats) while isolates at given time point was suppressed in visualization. A Erdos-Renyi (ER) random network ( = A) assumes a homogeneous probability of creating and dropping ties across all nodes conditional on observed density. A chain-like network ( = B) has more longer chains than the ER random network while lacks triangle-like structure due to constrains on degrees (less than three). While two small-world network has more star-like structure than others, our baseline small-world network (= D) is more homophilous than competing specification in its counterpart without homophily (= C), as can be seen in Table \ref{tab:Table1}.} 
+\end{figure}    
 
 \section{Conclusion and Discussion: TBA}
 
