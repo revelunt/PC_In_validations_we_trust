@@ -164,7 +164,7 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
     \noindent with $\epsilon$ being Gaussian noise added to ensure that each run of the simulation is not completely deterministic. The $\boldsymbol{\beta}$, true population parameters, were fixed throughout the simulation runs (specifically, $\beta_1$ = .5, $\beta_2$ = .2, and $\beta_3$ = .6, which were randomly chosen). 
     
     \subsubsection{Bag-of-Words Scenario}
-     For a dictionary (bag-of-words) method, we assume a very similar approach to data generation as discussed above, however we assume values of independent variables were sampled from a Categorical distribution with a separate Dirichlet priors for negative and positive draws (i.e., a discrete value range range from -5 to 5), where they represent some \enquote{features} of a given textual data (e.g., a word or a N-grams). These values then are later to be matched with a \enquote{dictionary} (which has similar discrete values that represent a predefined category) in order to determine the estimated values of \textit{y} for each observation. Since this requires discrete rather than continuous values, here we use slightly different setup for the dictionary approach. Based on those selected textual features, the \textit{true} values of \textit{y} are then sampled from a Binomial distribution as discussed above, with an exception that now the vector $\boldsymbol{\beta}$ is extended to K = 5 and values are fixed to .2, to better approximate the dimensionality of text data and reflect the possibilities of potential feature misspecification.
+     For a dictionary (bag-of-words) method, we assume a very similar approach to data generation as discussed above, however we assume values of independent variables were sampled from a Categorical distribution with a separate Dirichlet priors for negative and positive draws (i.e., a discrete value range range from -5 to 5), where they represent some \enquote{features} of a given textual data (e.g., a word or N-grams). These values are later to be matched with a \enquote{dictionary} (which has similar discrete values that represent a predefined category) in order to determine the estimated values of $y$ for each observation. Since this requires discrete rather than continuous values, here we use slightly different setup for the dictionary approach. Based on those selected textual features, the \textit{true} values of \textit{y} are then sampled from a Binomial distribution as discussed above, with an exception that now the vector $\boldsymbol{\beta}$ is extended to K = 5 and values are fixed to .2, to better approximate the dimensionality of text data and reflect the possibilities of potential feature misspecification.
        \begin{equation}
         \begin{gathered}
 %        
@@ -182,16 +182,17 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
 %}_{\text{6~elements}}
 %\bigr) \\
 %
-        \pi_{neg} \sim Dirichlet\bigl(K, \alpha_{neg}\bigr) \\
-        \pi_{pos} \sim Dirichlet\bigl(K, \alpha_{pos}\bigr)
+        \pi_{neg} \sim Dirichlet\bigl(N, \alpha_{neg}\bigr) \\
+        \pi_{pos} \sim Dirichlet\bigl(N, \alpha_{pos}\bigr)
         \end{gathered}
     \end{equation}
-    \noindent with $K$ being the desired number of independent variables, and $\alpha_{neg}$ and $\alpha_{pos}$ --- concentration hyperparameters with mass concentrated closer and further away from 0, respectively. The negative and positive draw probabilities $\pi_{neg}$ and $\pi_{pos}$ are then randomly selected for each draw and a single column of independent variables is drawn, treating such independent variables as a systematic, recurring features of a given textual data. 
+    \noindent with $N$ being the total number of observations, and $\alpha_{neg}$ and $\alpha_{pos}$ --- concentration hyperparameters with mass concentrated closer and further away from 0, respectively. The negative and positive draw probabilities $\pi_{neg}$ and $\pi_{pos}$ are then randomly selected for each draw and a single column of independent variables is drawn, treating such independent variables as a systematic, recurring features of a given textual data. 
     \begin{equation}
         \begin{gathered}
-            \boldsymbol{X} \sim Categorical\bigl(K, \bigl[\pi_{neg}\ \textrm{or}\ \pi_{pos}\bigr]\bigr)
+            \boldsymbol{X}_{k \in K}^T \sim Categorical\bigl(N, \bigl[\pi_{neg}\ \textrm{or}\ \pi_{pos}\bigr]\bigr)
         \end{gathered}
     \end{equation}
+    with $\boldsymbol{X}_k$ being a single independent variable and $K$ being the desired number of variables.
     And finally, having generated the set of independent variables, we generate $y$ in a similar fashion as discussed in (1).
      \begin{equation}
         \begin{gathered}
@@ -206,65 +207,94 @@ This means that $y$ becomes effectively a function of the simple sum of chosen t
     
     We specified several typical scenarios of how the true data would be coded by human coders for the purpose of validation of automated procedures. In typical automatic content analysis applications, at least two or more number of trained human coders are assigned to a common, small set of sample documents for manual coding, and independently code such documents for intercoder reliability testing. This process is repeated until the level of intercoder reliability is deemed satisfactory (typically Krippendorff’s alpha equal or greater than 0.7). Theoretically, achieving the satisfactory level of reliability means that coders can be treated as interchangeable to each other \parencite{krippendorff2004reliability}, therefore any observations produced by a single human coder in validation materials are, on average, likely to be similar to each other proportional to the chosen degree of intercoder reliability. Once such a coder interchangeability is ensured, the common practice is that remaining documents (for validation materials) are evenly --- typically by some convenient standard but non randomly --- divided and only coded by a single coder \parencite{grimmer2018unreliability}. While the total number of manual annotations produced by such human coders greatly vary across studies, the practice of evenly (but not randomly) dividing the validation materials across coders effectively means that any potential coder idiosyncrasies are just ignored while such idiosyncrasies are not randomly distributed across manual annotations produced for validation materials.      
     
-    Following the typical application in this area as sketched above, we assume that only a small fraction of data (i.e., held-out sample) is analyzed manually by a varying number of human coders for the purpose of providing a cross-validation result (against machine algorithms) that informs the performance of such automated procedures. Following this general setup, we specified few important factors that may affect the quality of the “golden standard” and therefore of the overall performance evaluation of later automated content algorithms. Those factors include: the number of human coders (k = 2, 4, 7, 10), the predetermined target values of intercoder reliability metric (Krippendorff’s alpha = 0.5, 0.6, 0.7, 0.8, 0.9), as well as the number of articles that each coder had to analyze in order to produce final human-coded data (the number of annotation per coder, n = 50, 100, 250, 500). Although somewhat arbitrary, these numbers were chosen to reflect typical content analysis procedures and their variations commonly carried out in social science applications, as evidenced in our Study 1. 
+    Following the typical application in this area as sketched above, we assume that only a small fraction of data (i.e., held-out sample) is analyzed manually by a varying number of human coders for the purpose of providing a cross-validation result (against machine algorithms) that informs the performance of such automated procedures. Following this general setup, we specified few important factors that may affect the quality of the “golden standard” and therefore of the overall performance evaluation of later automated content algorithms. Those factors include: the number of human coders (k = 2, 4, 7, 10), the predetermined target values of intercoder reliability metric (Krippendorff's alpha = 0.5, 0.6, 0.7, 0.8, 0.9), as well as the number of articles that each coder had to analyze in order to produce final human-coded data (the number of annotation per coder, n = 50, 100, 250, 500). Although somewhat arbitrary, these numbers were chosen to reflect typical content analysis procedures and their variations commonly carried out in social science applications, as evidenced in our Study 1. 
     
-    In all scenarios, human coders classify a given observation as ``1" (e.g., a news article contains the quantity of interest, such as a certain actor, frame, or tonality) or ``0" (e.g., does not contain this quantity of interest). This human coding ($\hat{y}$) can be in principle either correct or incorrect against the (unknown) “true” value of $y$, therefore behaviors of human coders were modeled by a Binomial distribution with varying probability of successfully categorizing the true data. The heterogeneity in each of the coders’ coding behaviors (e.g., expertise or bias) was also modelled by a beta distribution with varying shape (using predefined hyperparameters for each target reliability levels), which effectively enables us to simulate a situation in which where a certain coders produce more “correct” judgment ($\hat{y} = y$) whereas other coders produce more “false” judgment ($\hat{y} \neq y$). Yet the overall human annotation patterns at chosen level of a beta distribution parameters were ensured to produce an acceptable level of target reliability coefficient (e.g., Krippendorff’s Alpha = 0.7). Depending on specific application (dictionary-based vs. supervised learning), the output (coded data) from this stage is then used as either a post-hoc validation data or as an input for the later automated classification stage. 
+    In all scenarios, human coders classify a given observation as ``1'' (e.g., a news article contains the quantity of interest, such as a certain actor, frame, or tonality) or ``0'' (e.g., does not contain this quantity of interest). This human coding ($\hat{y}$) can be in principle either correct or incorrect against the (unknown) “true” value of $y$, therefore behaviors of human coders were modeled by a Binomial distribution with varying probability of successfully categorizing the true data. The heterogeneity in each of the coders’ coding behaviors (e.g., expertise or bias) was also modelled by a beta distribution with varying shape (using predefined hyperparameters for each target reliability levels), which effectively enables us to simulate a situation in which where a certain coders produce more “correct” judgment ($\hat{y} = y$) whereas other coders produce more ``false'' judgment ($\hat{y} \neq y$). Yet the overall human annotation patterns at chosen level of a beta distribution parameters were ensured to produce an acceptable level of target reliability coefficient (e.g., Krippendorff's alpha = 0.7). Depending on specific application (dictionary-based vs. supervised learning), the output (coded data) from this stage is then used as either a post-hoc validation data or as an input for the later automated classification stage. 
     
     \subsection{Algorithm-based Classification Stage}
     
     Following the typical application, we assumed a researcher uses a certain classification algorithm to predict the values of ($\hat{y}$) in each of the observations. For this purpose, we used three different classification algorithms – binomial GLM, Naïve Bayes (NB) classifier, and a bag-of-words dictionary approach. Although these are not exhaustive, these methods are among the most frequently utilized applications in automated contents analysis, especially coupled with human validation of such algorithms, as can be seen in \textcolor{red}{Table 1 in our Study 1 result}. 
     
-    Typically in a real-world scenario, researchers validate the computer-based coding based on a held-out human coded test set post hoc (for a bag-of-words dictionary approach), or use such human coded data to develop prediction algorithms and then “scale up” the automated coding process (for supervised learning, such as binomial GLM or Naïve Bayes). This means that we can also systematically compare different levels of precision, recall, and F1 scores (that are evaluated at different levels of human benchmark scores) against the true standard. For this purpose, we compare the estimated $\hat{y}$ values from scaled-up automated coding to the true values of y. Admittedly this would be impossible for practical applications, since the true value y would never be known. However by doing so we can precisely estimate the relative bias and coverage of proposed methods when using imperfect human coding as \enquote{gold standard.} Also by doing so, we also can compare how the overall accuracy is diminished from one step to another based on which factors. 
+    Typically in a real-world scenario, researchers validate the computer-based coding based on a held-out human coded test set post hoc (for a bag-of-words dictionary approach), or use such human coded data to develop prediction algorithms and then ``scale up'' the automated coding process (for supervised learning, such as binomial GLM or Naïve Bayes). This means that we can also systematically compare different levels of precision, recall, and F1 scores (that are evaluated at different levels of human benchmark scores) against the true standard. For this purpose, we compare the estimated $\hat{y}$ values from scaled-up automated coding to the true values of y. Admittedly this would be impossible for practical applications, since the true value y would never be known. However by doing so we can precisely estimate the relative bias and coverage of proposed methods when using imperfect human coding as \enquote{gold standard.} Also by doing so, we also can compare how the overall accuracy is diminished from one step to another based on which factors. 
     
-    The final Monte Carlo simulation used 4 (number of human coders, k) $\times$ 5 (target K alpha levels in human coding) $\times$ 4 (N of annotation per each human coder in producing validation data) $\times$ 3 (classification algorithms) full factorial design with 1,000 replications per each scenario, therefore yielded 240,000 results, which then summarized below.
+    The final Monte Carlo simulation used 4 (number of human coders, k) $\times$ 5 (target Krippendorff's alpha levels in human coding) $\times$ 4 (N of annotation per each human coder in producing validation data) $\times$ 3 (classification algorithms) full factorial design with 1,000 replications per each scenario, therefore yielded 240,000 results, which then summarized below.
     
 \section{Simulation Results}
 
-We first investigate the overall classification accuracy (against true value) as a function of target reliability level in validation materials, controlling for overall prevalence of the quantity of interest (e.g., a news article contains the quantity of interest, such as a certain actor, frame, or tonality). 
-\centerline{ -- Table \ref{tab:Table1} and Figure \ref{fig:Figure1} about here -- }    
-    
-% Figure 1: Plots of static (cross-sectional) networks from simulations    
-\begin{figure}
-\captionsetup[figure]{labelfont={bf,it}}
-\captionsetup[subfigure]{labelfont=bf,textfont=normalfont,singlelinecheck=on}
-    \centering
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{draft/network_plots1.pdf} 
-        \caption*{A. Erdos-Renyi random network}
-        \label{fig1:random}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{draft/network_plots2.pdf} 
-        \caption*{B. Chain network} \label{fig1:tree}
-    \end{subfigure}
+As a model check, we first investigate the overall classification accuracy (against true value) as a function of target reliability level in validation materials, predicting how well the proposed algorithms correctly predict the quantity of interest (such as a certain actor, frame, or tonality) at varying level of reliability level in validation materials. In Figure \ref{fig:Figure1} below, different levels of target Krippendorff's alpha is stacked over y-axis in each panel, and in x-axis overall prediction accuracy against true value (defined as the proportion of correct predictions, or the sum of true positive and true negative cases over entire cases) are presented along with their 95\% confidence intervals, for every combination of experimental factors in MC simulations.
 
-    \vspace{1cm}
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{draft/network_plots3.pdf} 
-        \caption*{C. Small-world network absent homophily} \label{fig1:nohomophily}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[trim={2cm 2cm 2cm 2cm}, clip, width=\linewidth]{draft/network_plots4.pdf} 
-        \caption*{D. Baseline small-world network} \label{fig1:smallworld}
-    \end{subfigure}
+\centerline{ -- Figure \ref{fig:Figure1} about here -- }    
     
-    \vspace{1cm}
-    \captionsetup{format=hang}
-    \caption{A cross-sectional view of simulated networks from different network topologies.} 
-    \label{fig:Figure1}
-    \captionsetup{font=small}
-    \caption*{Note: Colored nodes represent nodes that have at least one connection with their neighbor (Red = Republicans, Blue = Democrats) while isolates at given time point was suppressed in visualization. A Erdos-Renyi (ER) random network ( = A) assumes a homogeneous probability of creating and dropping ties across all nodes conditional on observed density. A chain-like network ( = B) has more longer chains than the ER random network while lacks triangle-like structure due to constrains on degrees (less than three). While two small-world network has more star-like structure than others, our baseline small-world network (= D) is more homophilous than competing specification in its counterpart without homophily (= C), as can be seen in Table \ref{tab:Table1}.} 
+% Figure 1: Overall accuracy
+\begin{figure}
+         \captionsetup[figure]{labelfont=bf,textfont=normalfont,singlelinecheck=on}
+         \centering
+         \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=1.05\columnwidth]{Results/overall_accuracy.pdf} 
+         \captionsetup{format=hang}
+         \caption{Overall Classification Accuracy (against true value) as a function of target reliability value (K alpha) in validation material. Reference line is overall mean.} 
+         \label{fig:Figure1}
 \end{figure}    
+
+As can be seen in Figure \ref{fig:Figure1} above, within two ML scenarios, using \enquote{better} quality training material appears to directly increase true classification accuracy, which is expected results. Using the overall accuracy in our simulation as the reference point, the first and the second panels of Figure \ref{fig:Figure1} makes it clear that the reliability level of training material have a nontrivial benefit in improving the accuracy of prediction based on automated procedures. Indeed, this is somewhat expected results since the ML methods takes the human input as the bases of developing classification algorithm, therefore overall accuracy of the final classifier is dependent upon human input and its quality thereof. In contrast, the last panel of Figure \ref{fig:Figure1} shows that typical Bag-of-words application does not benefit from improved (post-hoc) human coding. Yet again, this is much expected pattern, since in typical dictionary application, the quality of a given dictionary itself does not depend at all on post-hoc human coding unless such human coding is used in developing and constructing dictionary itself. Overall, our results presented in Figure \ref{fig:Figure1} shows that our simulation setup can correctly reproduce a common expected pattern in extant studies (therefore ensures the validity of our analysis and conclusion).   
+
+Next, we examine indirect consequences of relying on imperfect human coded materials as a benchmark in evaluating the performances of automated procedures in terms of post-hoc validation. Typically, researchers rely on  small fraction of human-coded materials for validating their primary findings from automated procedures, deciding whether the overall accuracy or classification performance is good enough to proceed to further analyses, based against some \textit{a priori} chosen threshold value: if validation (based on human coding) is purportedly not satisfying enough to pass such a threshold level, additional steps are sought to improve the quality of automated procedures (e.g., re-training of algorithms, or changing the dictionary, etc).\footnote{Here, we do not consider a scenario where a researcher decides to improve the quality of human coding. This is based on the consideration, as to our argument being advanced here, that a researcher (often incorrectly) assumes that human coding is perfectly reliable and valid.} The primary interest of such post-hoc validation procedures lies in extrapolating the observed level of classification performance (based on validation materials) to the level of classification performance \textit{that could have been observed} based on entire range of data. In other words, the observed level of classification performance serves as a proxy, or an estimate for the true, unknown classification performance. Therefore, interesting question here is how well the observed classification performance reflects true classification performance under imperfect reliability, and how large or small a potential bias is. Relatedly, making decisions about the unknown, true values of overall classification performance based on observed performance from hand-coded validation materials, essentially, can be seen as classical decision error scenarios (i.e., type I and type II errors), as schematically presented in Table \ref{tab:Table1}.
+\centerline{ -- Table \ref{tab:Table1} about here -- }    
+
+% Table 1
+\begin{table}[!htbp] \centering 
+	\begin{minipage}{\textwidth}
+    \centering
+  \caption{\\ Decision scenarios based on observed vs. true level of classification performance} 
+  \label{tab:Table1} 
+    \centering
+  \begin{tabular}{ ccc}
+\toprule
+      \multicolumn{1}{c}{} &
+      \multicolumn{2}{c}{\textbf{True classification performance}} \\
+\cline{2-3}
+ & Below threshold & Above threshold \\
+\hline \\[-1.8ex] 
+  \textbf{Observed} & & \\  
+ Below threshold & True Negative & False Negative (Type II) \\ 
+ Above threshold & False Positive (Type I) & True Positive \\ 
+\hline \\[-1.8ex]  
+	\end{tabular}
+ 	\end{minipage}
+\end{table} 
+
+In order to illuminate the potential consequences of relying imperfect data in making decisions about the true, unknown classification performances of the proposed automated procedure, we divide our entire simulations into four mutually exclusive categories, as in Table \ref{tab:Table1}, based on the cross-tabulation of \enquote{observed} F1 scores (from validation materials) against true F1 scores (based on the true values of y). We first present the proportion of simulation cases which incorrectly conclude about the overall classification quality based on observed quality. Second, we further present the degree of relative \enquote{bias} within such incorrectly concluded cases --- defined as the $ F1_{validation}/F1_{true} $, where F1 score is a weighted average of the precision and recall --- which captures the degree of under- or over-estimation of (true) overall F1 scores against observed F1 scores based on human validation materials. For this application, we choose the cutoff value of F1 score to be 0.6478, which is just the average F1 score reported in Study 1.
+
+
 
 \section{Conclusion and Discussion: TBA}
 
-    Our contribution should be read as a call for a thorough and systematic application of validation procedures in any publication drawing on automated text analysis procedures. At the same time, the study serves to benchmark the combination of reliability in gold standard/ ground truth and validity scores and warns against improper use of both to demonstrate the validity of the approach
+    Our contribution should be read as a call for a thorough and systematic application of validation procedures in any publication drawing on automated text analysis procedures. At the same time, the study serves to benchmark the combination of reliability in gold standard/ ground truth and validity scores and warns against improper use of both to demonstrate the validity of the approach.
+    
+    -	Summary of what this paper did and what we found out:
+	This study set out to assess the employment of validation measures in existing automated content analyses as well as the consequences of different levels of reliability in the Gold Standard for the results of such analyses. 
+	
+	To that end, we first presented the results of a meta study of relevant journal articles. The results of this analysis confirm that the field of automated text analysis is still in its infancies. A common agreement upon quality standards is still missing – among authors as well as reviewers or editors. Nevertheless, it is maturing just like the field of manual content analysis was ten years ago.  
+	
+	Moreover, we ran a set of Monte Carlo simulations for the two most popular approaches (supervised machine learning and dictionary approach) to explore the consequences of different degrees of reliability in the gold standard. The results show that using imperfect human judgments trickles down to the validity of the automated approaches in the sense that it indeed has systematic consequences for the evaluation of the proposed automated procedures. 
+	
+-	Reflect on our methodological approach (limitations)? 
+
+-	Best practice / how to do automated analysis properly? 
+
+-	Discussion/Implications: 
+	Our contribution should be read as a call for a thorough and systematic application of validation procedures in any publication drawing on automated text analysis procedures.
+	
+	Responsibility of science in a post-truth era --  Transparency, apply traceable procedures to open the black box of automated text analyses 
+	
+	Computers are not inherently correct -- validity checks are crucial
+	
+	automated analysis takes time and resources, not just a cheap alternative to expensive manual coding 
+	
+    At the same time, the study serves to benchmark the combination of reliability in gold standard/ground truth and validity scores and warns against improper use of both to demonstrate the validity of the approach
+    
+	Relate back to the title: it shouldn’t be garbage at all…? So how to avoid garbage instead of assessing the degree of stink? 
+
+
     
 \printbibliography
 %\newpage
