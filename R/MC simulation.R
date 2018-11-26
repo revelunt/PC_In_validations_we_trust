@@ -196,7 +196,7 @@ p2 <- ggplot(sim.naive.results, aes(x = target.k.alpha, y = f.overall)) +
   xlab("Target Kripp alpha values") + ylab("Overall F1 score (using true value)") +
   theme(legend.position="bottom")
 
-pdf("naive.bayes.summary.01.pdf", width = 12, height = 10, paper = "a4r")
+pdf("BAYES_summary_01.pdf", width = 12, height = 10, paper = "a4r")
 p1 + ggtitle("Overall Classification Quality: Naive Bayes") +
   theme(plot.title = element_text(hjust = 0.5)) + p2 + plot_layout(nrow = 2)
 dev.off()
@@ -222,7 +222,7 @@ p4 <- ggplot(sim.naive.results,
   theme(legend.position="bottom") +
   guides(color = guide_legend(title = "No of coders"))
 
-pdf("naive.bayes.summary.02.pdf", width = 12, height = 10, paper = "a4r")
+pdf("BAYES_summary_02.pdf", width = 12, height = 10, paper = "a4r")
 p3 + ggtitle("Absolute Degree of Bias Against True Values: Naive Bayes") +
   theme(plot.title = element_text(hjust = 0.5)) + p4 + plot_layout(nrow = 2)
 dev.off()
@@ -258,7 +258,7 @@ p4_1 <- sim.naive.results[, .(bias.F1 = median(bias.F1),
   theme(legend.position="bottom") +
   guides(color = guide_legend(title = "Target Kripp alpha values"))
 
-pdf("naive.bayes.summary.03.pdf", width = 12, height = 10, paper = "a4r")
+pdf("BAYES_summary_03.pdf", width = 12, height = 10, paper = "a4r")
 p3_1 + ggtitle("Relative Bias Against True Values: Naive Bayes") +
   theme(plot.title = element_text(hjust = 0.5)) + p4_1 + plot_layout(nrow = 2)
 dev.off()
@@ -278,7 +278,7 @@ dat_1 <- sim.naive.results[, .(percent = .N / 1000,
                                upr = quantile(bias.accuracy, 0.975, na.rm = T)),
                            by = c("k", "target.k.alpha", "n.units_f", "results")]
 
-pdf("naive.bayes.summary.04.pdf", width = 12, height = 10, paper = "a4r")
+pdf("BAYES_summary_04.pdf", width = 12, height = 10, paper = "a4r")
 ggplot(dat_1[results %in% c("False Pos", "False Neg"), ],
        aes(y = percent, x = factor(target.k.alpha), fill = factor(results))) +
   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
@@ -309,7 +309,7 @@ dat_2 <- sim.naive.results[, .(percent = .N / 1000,
                                upr = quantile(bias.F1, 0.975, na.rm = T)),
                            by = c("k", "target.k.alpha", "n.units_f", "results2")]
 
-pdf("naive.bayes.summary.05.pdf", width = 12, height = 10, paper = "a4r")
+pdf("BAYES_summary_05.pdf", width = 12, height = 10, paper = "a4r")
 ggplot(dat_2[results2 %in% c("False Pos", "False Neg"), ],
        aes(y = percent, x = factor(target.k.alpha), fill = factor(results2))) +
   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
@@ -375,7 +375,7 @@ p6 <- ggplot(sim.binomial.results, aes(x = target.k.alpha, y = f.overall)) +
   xlab("Target Kripp alpha values") + ylab("Overall F1 score (using true value)") +
   theme(legend.position="bottom")
 
-pdf("GLM.summary.01.pdf", width = 12, height = 10, paper = "a4r")
+pdf("GLM_summary_01.pdf", width = 12, height = 10, paper = "a4r")
 p5 + ggtitle("Overall Classification Quality: GLM") +
   theme(plot.title = element_text(hjust = 0.5)) +
   p6 + plot_layout(nrow = 2)
@@ -401,7 +401,7 @@ p8 <- ggplot(sim.binomial.results,
   theme(legend.position="bottom") +
   guides(color = guide_legend(title = "No of coders"))
 
-pdf("GLM.summary.02.pdf", width = 12, height = 10, paper = "a4r")
+pdf("GLM_summary_02.pdf", width = 12, height = 10, paper = "a4r")
 p7 + ggtitle("Absolute Degree of Bias Against True Values: GLM") +
   theme(plot.title = element_text(hjust = 0.5)) + p8 + plot_layout(nrow = 2)
 dev.off()
@@ -437,7 +437,7 @@ p8_1 <- sim.binomial.results[, .(bias.F1 = median(bias.F1, na.rm = T),
   theme(legend.position="bottom") +
   guides(color = guide_legend(title = "Target Kripp alpha values"))
 
-pdf("GLM.summary.03.pdf", width = 12, height = 10, paper = "a4r")
+pdf("GLM_summary_03.pdf", width = 12, height = 10, paper = "a4r")
 p7_1 + ggtitle("Relative Bias Against True Values: GLM") +
   theme(plot.title = element_text(hjust = 0.5)) + p8_1 + plot_layout(nrow = 2)
 dev.off()
@@ -457,7 +457,7 @@ dat_3 <- sim.binomial.results[, .(percent = .N / 1000,
                                   upr = quantile(bias.accuracy, 0.975, na.rm = T)),
                               by = c("k", "target.k.alpha", "n.units_f", "results")]
 
-pdf("GLM.summary.04.pdf", width = 12, height = 10, paper = "a4r")
+pdf("GLM_summary_04.pdf", width = 12, height = 10, paper = "a4r")
 ggplot(dat_3[results %in% c("False Pos", "False Neg"), ],
        aes(y = percent, x = factor(target.k.alpha), fill = factor(results))) +
   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
@@ -488,7 +488,7 @@ dat_4 <- sim.binomial.results[, .(percent = .N / 1000,
                                   upr = quantile(bias.F1, 0.975, na.rm = T)),
                               by = c("k", "target.k.alpha", "n.units_f", "results2")]
 
-pdf("GLM.summary.05.pdf", width = 12, height = 10, paper = "a4r")
+pdf("GLM_summary_05.pdf", width = 12, height = 10, paper = "a4r")
 ggplot(dat_4[results2 %in% c("False Pos", "False Neg"), ],
        aes(y = percent, x = factor(target.k.alpha), fill = factor(results2))) +
   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
@@ -549,7 +549,7 @@ p10 <- ggplot(sim.bow.results, aes(x = target.k.alpha, y = f.overall)) +
   xlab("Target Kripp alpha values") + ylab("Overall F1 score (using true value)") +
   theme(legend.position="bottom")
 
-pdf("BoW.summary.01.pdf", width = 12, height = 10, paper = "a4r")
+pdf("BoW_summary_01.pdf", width = 12, height = 10, paper = "a4r")
 p9 + ggtitle("Overall Classification Quality: Bag of Words") +
   theme(plot.title = element_text(hjust = 0.5)) +
   p10 + plot_layout(nrow = 2)
@@ -575,7 +575,7 @@ p12 <- ggplot(sim.bow.results,
   theme(legend.position="bottom") +
   guides(color = guide_legend(title = "No of coders"))
 
-pdf("BoW.summary.02.pdf", width = 12, height = 10, paper = "a4r")
+pdf("BoW_summary_02.pdf", width = 12, height = 10, paper = "a4r")
 p11 + ggtitle("Absolute Degree of Bias Against True Values: Bag of Words") +
   theme(plot.title = element_text(hjust = 0.5)) + p12 + plot_layout(nrow = 2)
 dev.off()
@@ -611,7 +611,7 @@ p12_1 <- sim.bow.results[, .(bias.F1 = median(bias.F1, na.rm = T),
   theme(legend.position="bottom") +
   guides(color = guide_legend(title = "Target Kripp alpha values"))
 
-pdf("BoW.summary.03.pdf", width = 12, height = 10, paper = "a4r")
+pdf("BoW_summary_03.pdf", width = 12, height = 10, paper = "a4r")
 p11_1 + ggtitle("Relative Bias Against True Values: Bag of Words") +
   theme(plot.title = element_text(hjust = 0.5)) + p12_1 + plot_layout(nrow = 2)
 dev.off()
@@ -631,7 +631,7 @@ dat_5 <- sim.bow.results[, .(percent = .N / 1000,
                              upr = quantile(bias.accuracy, 0.975, na.rm = T)),
                          by = c("k", "target.k.alpha", "n.units_f", "results")]
 
-pdf("BoW.summary.04.pdf", width = 12, height = 10, paper = "a4r")
+pdf("BoW_summary_04.pdf", width = 12, height = 10, paper = "a4r")
 ggplot(dat_5[results %in% c("False Pos", "False Neg"), ],
        aes(y = percent, x = factor(target.k.alpha), fill = factor(results))) +
   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
@@ -662,7 +662,7 @@ dat_6 <- sim.bow.results[, .(percent = .N / 1000,
                              upr = quantile(bias.F1, 0.975, na.rm = T)),
                          by = c("k", "target.k.alpha", "n.units_f", "results2")]
 
-pdf("BoW.summary.05.pdf", width = 12, height = 10, paper = "a4r")
+pdf("BoW_summary_05.pdf", width = 12, height = 10, paper = "a4r")
 ggplot(dat_6[results2 %in% c("False Pos", "False Neg"), ],
        aes(y = percent, x = factor(target.k.alpha), fill = factor(results2))) +
   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
@@ -688,6 +688,6 @@ rm(sim.bow.results, dat_5, dat_6)
 
 ## overall classification accuracy
 require(patchwork)
-pdf("overall.accuracy.pdf", height = 16, width = 7, paper = "a4")
+pdf("overall_accuracy.pdf", height = 16, width = 7, paper = "a4")
 p0 + p00 + p000 + plot_layout(nrow = 3)
 dev.off()
