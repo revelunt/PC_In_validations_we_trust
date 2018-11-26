@@ -163,6 +163,26 @@ if (!("sim.naive.results" %in% ls())) load("sim.naive.results.Rdata")
 sim.naive.results[, n.units_f := factor(n.units, levels = c(50, 100, 250, 500),
                      labels = c("Annotation N = 50", "Annotation N = 100",
                                  "Annotation N = 250", "Annotation N = 500"))]
+sim.naive.results[, k_f := factor(k, levels = c(2, 4, 7, 10),
+                                  labels = c("Coder \nn = 2", "Coder \nn = 4",
+                                             "Coder \nn = 7", "Coder \nn = 10"))]
+
+## overall accuracy as a fuction of target.k.alpha
+plot0 <- sim.naive.results[, .(accuracy = median(accuracy.overall, na.rm = T),
+                               lwr = quantile(accuracy.overall, 0.025, na.rm = T),
+                               upr = quantile(accuracy.overall, 0.975, na.rm = T)),
+                           by = c("k_f", "target.k.alpha", "n.units_f")]
+
+p0 <- ggplot(plot0, aes(x = accuracy, y = target.k.alpha, xmin = lwr, xmax = upr)) +
+  geom_point(size = 1.5) + geom_errorbarh(height = 0) +
+  xlab("") + ylab("Target K alpha values") +
+  ggtitle("Overall Accuracy: GLM") +
+  geom_vline(xintercept = sim.naive.results[, mean(accuracy.overall)],
+             color = "gray", linetype = 2) + ## reference line is overall mean
+  theme_bw() + theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  facet_grid(k_f ~ n.units_f)
+
+
 
 p1 <- ggplot(sim.naive.results, aes(x = target.k.alpha, y = accuracy.overall)) +
   geom_smooth(method = "lm", alpha = 0.2, color = "black") + theme_bw() +
@@ -324,6 +344,24 @@ if (!("sim.binomial.results" %in% ls())) load("sim.binomial.results.Rdata")
 sim.binomial.results[, n.units_f := factor(n.units, levels = c(50, 100, 250, 500),
                                         labels = c("Annotation N = 50", "Annotation N = 100",
                                                    "Annotation N = 250", "Annotation N = 500"))]
+sim.binomial.results[, k_f := factor(k, levels = c(2, 4, 7, 10),
+                                  labels = c("Coder \nn = 2", "Coder \nn = 4",
+                                             "Coder \nn = 7", "Coder \nn = 10"))]
+## overall accuracy as a fuction of target.k.alpha
+plot00 <- sim.binomial.results[, .(accuracy = median(accuracy.overall, na.rm = T),
+                               lwr = quantile(accuracy.overall, 0.025, na.rm = T),
+                               upr = quantile(accuracy.overall, 0.975, na.rm = T)),
+                           by = c("k_f", "target.k.alpha", "n.units_f")]
+
+p00 <- ggplot(plot00, aes(x = accuracy, y = target.k.alpha, xmin = lwr, xmax = upr)) +
+  geom_point(size = 1.5) + geom_errorbarh(height = 0) +
+  xlab("") + ylab("Target K alpha values") +
+  ggtitle("Overall Accuracy: GLM") +
+  geom_vline(xintercept = sim.naive.results[, mean(accuracy.overall)],
+             color = "gray", linetype = 2) + ## reference line is overall mean
+  theme_bw() + theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  facet_grid(k_f ~ n.units_f)
+
 
 p5 <- ggplot(sim.binomial.results, aes(x = target.k.alpha, y = accuracy.overall)) +
   geom_smooth(method = "lm", alpha = 0.2, color = "black") + theme_bw() +
@@ -480,6 +518,24 @@ if (!("sim.bow.results" %in% ls())) load("sim.bow.results.Rdata")
 sim.bow.results[, n.units_f := factor(n.units, levels = c(50, 100, 250, 500),
                                       labels = c("Annotation N = 50", "Annotation N = 100",
                                                  "Annotation N = 250", "Annotation N = 500"))]
+sim.bow.results[, k_f := factor(k, levels = c(2, 4, 7, 10),
+                                labels = c("Coder \nn = 2", "Coder \nn = 4",
+                                           "Coder \nn = 7", "Coder \nn = 10"))]
+## overall accuracy as a fuction of target.k.alpha
+plot000 <- sim.bow.results[, .(accuracy = median(accuracy.overall, na.rm = T),
+                                   lwr = quantile(accuracy.overall, 0.025, na.rm = T),
+                                   upr = quantile(accuracy.overall, 0.975, na.rm = T)),
+                               by = c("k_f", "target.k.alpha", "n.units_f")]
+
+p000 <- ggplot(plot000, aes(x = accuracy, y = target.k.alpha, xmin = lwr, xmax = upr)) +
+  geom_point(size = 1.5) + geom_errorbarh(height = 0) +
+  xlab("") + ylab("Target K alpha values") +
+  ggtitle("Overall Accuracy: Bag of Words") +
+  geom_vline(xintercept = sim.naive.results[, mean(accuracy.overall)],
+             color = "gray", linetype = 2) + ## reference line is overall mean
+  theme_bw() + theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  facet_grid(k_f ~ n.units_f)
+
 
 p9 <- ggplot(sim.bow.results, aes(x = target.k.alpha, y = accuracy.overall)) +
   geom_smooth(method = "lm", alpha = 0.2, color = "black") + theme_bw() +
@@ -628,3 +684,10 @@ ggplot(dat_6[results2 %in% c("False Pos", "False Neg") & percent > 0.01, ],
 dev.off()
 
 rm(sim.bow.results, dat_5, dat_6)
+
+
+## overall classification accuracy
+require(patchwork)
+pdf("overall.accuracy.pdf", height = 16, width = 7, paper = "a4")
+p0 + p00 + p000 + plot_layout(nrow = 3)
+dev.off()
