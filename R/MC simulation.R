@@ -182,8 +182,6 @@ p0 <- ggplot(plot0, aes(x = accuracy, y = target.k.alpha, xmin = lwr, xmax = upr
   theme_bw() + theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
   facet_grid(k_f ~ n.units_f)
 
-
-
 p1 <- ggplot(sim.naive.results, aes(x = target.k.alpha, y = accuracy.overall)) +
   geom_smooth(method = "lm", alpha = 0.2, color = "black") + theme_bw() +
   facet_grid( ~ n.units_f) +
@@ -283,8 +281,8 @@ ggplot(dat_1[results %in% c("False Pos", "False Neg"), ],
        aes(y = percent, x = factor(target.k.alpha), fill = factor(results))) +
   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
   xlab("Target Kripp alpha values") + ylab("% Decision Error Based on Accuracy (validation vs. true value)") +
-  theme(legend.position="bottom") +
-  guides(fill = guide_legend(title = "Error types"))
+  ggtitle("% Decision error, Naive Bayes") + theme(plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position="bottom") + guides(fill = guide_legend(title = "Error types"))
 
 ggplot(dat_1[results %in% c("False Pos", "False Neg") & percent > 0.01, ],
        aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
@@ -314,8 +312,8 @@ ggplot(dat_2[results2 %in% c("False Pos", "False Neg"), ],
        aes(y = percent, x = factor(target.k.alpha), fill = factor(results2))) +
   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
   xlab("Target Kripp alpha values") + ylab("% Decision Error Based on F1 (validation vs. true value)") +
-  theme(legend.position="bottom") +
-  guides(fill = guide_legend(title = "Error types"))
+  ggtitle("% Decision error, Naive Bayes") + theme(plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position="bottom") + guides(fill = guide_legend(title = "Error types"))
 
 ggplot(dat_2[results2 %in% c("False Pos", "False Neg") & percent > 0.01, ],
        aes(y = bias.F1, x = factor(k), color = factor(target.k.alpha))) +
@@ -330,8 +328,6 @@ ggplot(dat_2[results2 %in% c("False Pos", "False Neg") & percent > 0.01, ],
   guides(color = guide_legend(title = "Target Kripp alpha values"))
 dev.off()
 
-## remove associated objects
-rm(sim.naive.results, dat_1, dat_2)
 
 
 # ------------------ GLM -------------- #
@@ -462,8 +458,8 @@ ggplot(dat_3[results %in% c("False Pos", "False Neg"), ],
        aes(y = percent, x = factor(target.k.alpha), fill = factor(results))) +
   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
   xlab("Target Kripp alpha values") + ylab("% Decision Error Based on Accuracy (validation vs. true value)") +
-  theme(legend.position="bottom") +
-  guides(fill = guide_legend(title = "Error types"))
+  ggtitle("% Decision error, GLM") + theme(plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position="bottom") + guides(fill = guide_legend(title = "Error types"))
 
 ggplot(dat_3[results %in% c("False Pos", "False Neg") & percent > 0.01, ],
        aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
@@ -493,8 +489,8 @@ ggplot(dat_4[results2 %in% c("False Pos", "False Neg"), ],
        aes(y = percent, x = factor(target.k.alpha), fill = factor(results2))) +
   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
   xlab("Target Kripp alpha values") + ylab("% Decision Error Based on F1 (validation vs. true value)") +
-  theme(legend.position="bottom") +
-  guides(fill = guide_legend(title = "Error types"))
+  ggtitle("% Decision error, GLM") + theme(plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position="bottom") + guides(fill = guide_legend(title = "Error types"))
 
 ggplot(dat_4[results2 %in% c("False Pos", "False Neg") & percent > 0.01, ],
        aes(y = bias.F1, x = factor(k), color = factor(target.k.alpha))) +
@@ -508,8 +504,6 @@ ggplot(dat_4[results2 %in% c("False Pos", "False Neg") & percent > 0.01, ],
   theme(plot.title = element_text(hjust = 0.5)) +
   guides(color = guide_legend(title = "Target Kripp alpha values"))
 dev.off()
-
-rm(sim.binomial.results, dat_3, dat_4)
 
 
 # ------------- Bag of Words ----------------
@@ -636,8 +630,8 @@ ggplot(dat_5[results %in% c("False Pos", "False Neg"), ],
        aes(y = percent, x = factor(target.k.alpha), fill = factor(results))) +
   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
   xlab("Target Kripp alpha values") + ylab("% Decision Error Based on Accuracy (validation vs. true value)") +
-  theme(legend.position="bottom") +
-  guides(fill = guide_legend(title = "Error types"))
+  ggtitle("% Decision error, Bag of Words") + theme(plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position="bottom") + guides(fill = guide_legend(title = "Error types"))
 
 ggplot(dat_5[results %in% c("False Pos", "False Neg") & percent > 0.01, ],
        aes(y = bias.accuracy, x = factor(k), color = factor(target.k.alpha))) +
@@ -667,8 +661,8 @@ ggplot(dat_6[results2 %in% c("False Pos", "False Neg"), ],
        aes(y = percent, x = factor(target.k.alpha), fill = factor(results2))) +
   geom_bar(stat = "identity") +  facet_grid(k ~ n.units_f) +
   xlab("Target Kripp alpha values") + ylab("% Decision Error Based on F1 (validation vs. true value)") +
-  theme(legend.position="bottom") +
-  guides(fill = guide_legend(title = "Error types"))
+  ggtitle("% Decision error, Bag of Words") + theme(plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position="bottom") + guides(fill = guide_legend(title = "Error types"))
 
 ggplot(dat_6[results2 %in% c("False Pos", "False Neg") & percent > 0.01, ],
        aes(y = bias.F1, x = factor(k), color = factor(target.k.alpha))) +
@@ -682,8 +676,6 @@ ggplot(dat_6[results2 %in% c("False Pos", "False Neg") & percent > 0.01, ],
   theme(plot.title = element_text(hjust = 0.5)) +
   guides(color = guide_legend(title = "Target Kripp alpha values"))
 dev.off()
-
-rm(sim.bow.results, dat_5, dat_6)
 
 
 ## overall classification accuracy
