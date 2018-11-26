@@ -680,6 +680,14 @@ dev.off()
 
 ## overall classification accuracy
 require(patchwork)
-pdf("overall_accuracy.pdf", height = 16, width = 7, paper = "a4")
-p0 + p00 + p000 + plot_layout(nrow = 3)
+test <- rbind(plot0, plot00, plot000)
+test[, classifier := factor(rep(c("NB", "GLM", "BoW"), each = 80), levels = c("NB", "GLM", "BoW"))]
+pdf("overall_accuracy.pdf", height = 18, width = 7, paper = "a4")
+ggplot(test, aes(x = accuracy, y = factor(target.k.alpha), xmin = lwr, xmax = upr)) +
+  geom_point(size = 1) + geom_errorbarh(height = 0) +
+  xlab("Overall Accuracy") + ylab("Target K alpha values") +
+  geom_vline(xintercept = sim.naive.results[, mean(accuracy.overall)],
+             color = "gray", linetype = 2) + ## reference line is overall mean
+  theme_bw() + theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  facet_grid(classifier + k_f ~ n.units_f)
 dev.off()
