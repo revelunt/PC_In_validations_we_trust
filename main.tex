@@ -200,9 +200,9 @@ As a model check, we first investigate the overall classification accuracy (agai
 \begin{figure}
          \captionsetup[figure]{labelfont=bf,textfont=normalfont,singlelinecheck=on}
          \centering
-         \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=1.05\columnwidth]{Results/overall_accuracy.pdf} 
+         \includegraphics[trim={0.2cm 0.2cm 0.2cm 0.2cm}, clip, width=\columnwidth]{Results/overall_accuracy.pdf} 
          \captionsetup{format=hang}
-         \caption{Overall Classification Accuracy (against true value) as a function of target reliability value (K alpha) in validation material. Reference line is overall mean.} 
+         \caption{Overall classification accuracy against true value across conditions (Rrference line is overall mean).} 
          \label{fig:Figure1}
 \end{figure}    
 
@@ -213,7 +213,7 @@ Next, we examine indirect consequences of relying on imperfect human coded mater
 
 % Table 1
 \begin{table}[!htbp] \centering 
-	\begin{minipage}{\textwidth}
+	\begin{minipage}{1.1\textwidth}
     \centering
   \caption{\\ Decision scenarios based on observed vs. true level of classification performance} 
   \label{tab:Table1} 
@@ -302,6 +302,13 @@ In order to illuminate the potential consequences of relying imperfect data in m
 
 \section{Conclusion and Discussion: TBA}
 
+    
+    The aims of the current paper were twofold; we first wanted to provide a systematic overview of how the matter of validation is approached by the field at large, and second --- we wanted to provide simulation-based evidence of how various decisions taken in the training and validation phases of a study that relies on machine learning applications can have widely different implications. To this end, we first presented the results of a meta study of relevant journal articles, as well as designed a set of Monte Carlo simulations. The results of this analysis confirm that the field of automated text analysis is still in its infancy. A common agreement upon quality standards is still missing – among authors as well as reviewers or editors. Nevertheless, it is maturing just like the field of manual content analysis was ten years ago.
+    
+    
+    
+    
+    
     Our contribution should be read as a call for a thorough and systematic application of validation procedures in any publication drawing on automated text analysis procedures. At the same time, the study serves to benchmark the combination of reliability in gold standard/ ground truth and validity scores and warns against improper use of both to demonstrate the validity of the approach.
     
     -	Summary of what this paper did and what we found out:
