@@ -176,7 +176,7 @@ plot0 <- sim.naive.results[, .(accuracy = median(accuracy.overall, na.rm = T),
 p0 <- ggplot(plot0, aes(x = accuracy, y = target.k.alpha, xmin = lwr, xmax = upr)) +
   geom_point(size = 1.5) + geom_errorbarh(height = 0) +
   xlab("") + ylab("Target K alpha values") +
-  ggtitle("Overall Accuracy: GLM") +
+  ggtitle("Overall Accuracy: Naive Bayes") +
   geom_vline(xintercept = sim.naive.results[, mean(accuracy.overall)],
              color = "gray", linetype = 2) + ## reference line is overall mean
   theme_bw() + theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
