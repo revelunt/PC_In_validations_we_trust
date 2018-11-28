@@ -1,5 +1,5 @@
 % declare documents and packages
-\documentclass[man, 12pt, a4paper, nolmodern, noextraspace]{apa6}
+\documentclass[man, floatsintext, 12pt, a4paper, nolmodern, noextraspace]{apa6}
 \usepackage[T1]{fontenc} 
 \usepackage[utf8]{inputenc}
 \usepackage{newunicodechar}
@@ -16,15 +16,17 @@
 \usepackage{booktabs}
 \usepackage{multirow} % multirow tables
 \usepackage{arydshln} % dashline in tabular 
-\usepackage{rotating} % vertical tables
-\usepackage{pdflscape} % landscape pages
 \renewcommand{\footnotesize}{\small} % use 11pt for footnotes
 \usepackage[doublespacing]{setspace} % single space for footnotes
 \usepackage{footmisc} % cross-referencing footnotes in in-text
-\setlength{\skip\footins}{1.5pc plus 1pt} % some more space between footnote and main body
+\setlength{\skip\footins}{1.5pc plus 0.5pt} % some more space between footnote and main body
 % this command put all footnotes to endnote at the end of the paper
 %\usepackage{endnotes}
 %\let\footnote\endnote
+
+\DeclareCaptionLabelFormat{tablelabel}{\raggedright#1 #2}
+\DeclareCaptionLabelFormat{figurelabel}{\raggedright\textit{#1 #2}}
+\DeclareCaptionTextFormat{tabletext}{\raggedright\textit{#1}}
 
 % for word counts
 \newcommand{\detailtexcount}{%
@@ -138,8 +140,27 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
 
     The results of the systematic literature review are presented in Table \ref{tab:Table1} below. Among 73 articles being identified as relevant, a total of 55 studies used dictionary approaches while 18 used supervised machine learning methods.\footnote{ Among excluded studies, only 15 studies have used unsupervised learning or other forms of automated content analysis, suggesting dictionary-based or supervised machine learning applications are much more frequently used in the social sciences in general.\label{fn:Study1}} Yet only about half of the papers using a dictionary approach to automated content analysis referred to some sort of manual gold standard in their text, typically relied on 4.24 coders with a median of 232 manual materials per coder, yielding a little less than 1000 manual annotations for validation materials. Among them, even less – only 16 percent – actually reported any measures of inter-coder reliability in such materials -- only 2 studies ever reported Krippendorff’s alpha values, and 3 studies report either percentage agreement or Holsti agreement measure (the rest of studies reported other measures such as Scott's Pi or correlation coefficients). Notably, shares are much higher when coming to papers using supervised machine learning. The most common measure of inter-coder reliability reported were percentage agreement (in seven cases, 38\%) and Krippendorff’s alpha (in six cases, 33\%). In sum, among 73 articles we have examined, only 9 studies (which is about 20\% of studies that ever refer to some human-coded gold standards) have used Krippendorff’s alpha (average alpha = 0.68). 
     
-    When it comes to the papers referring to procedures of validation of their automated approaches, results were very similar. However, only around 40 percent of papers using a dictionary approach also reported some validation measures, compared to 67 percent of papers using supervised machine learning. The most commonly used measures of validity are indeed the widely accepted measures of precision (in 13 cases, \textit{M} = 0.74) and recall (in 9 cases, \textit{M} = 0.60), yielding an average of F1 score of 0.6311 (in 10 cases, based on either directly reported F1 scores or indirectly calculated F1 scores from reported precision and recall). However, we also observe that other metrics were widely used as well in reporting validation. This is somewhat disconcerting insofar as these tend to be indeed either the intercoder reliability measures (e.g., Holsti, Cohen’s Kappa, Krippendorff’s alpha) or correlation coefficients, which is \textit{not} designed for the validation of a given automated procedures. Interestingly, there were only three studies which reported \textit{both} Krippendorff’s alpha in human-coded materials \textit{and} proper validation metrics. Generally, the result of Study 1 reveals that reported measures of validations and the quality of human-coded data used in such validations are far from what is being acknowledged as the best-practice in extant literature.
-    \centerline{ -- Table \ref{tab:Table1} about here -- }    
+    When it comes to the papers referring to procedures of validation of their automated approaches, results were very similar. However, only around 40 percent of papers using a dictionary approach also reported some validation measures, compared to 67 percent of papers using supervised machine learning. The most commonly used measures of validity are indeed the widely accepted measures of precision (in 13 cases, \textit{M} = 0.74) and recall (in 9 cases, \textit{M} = 0.60), yielding an average of F1 score of 0.6311 (in 10 cases, based on either directly reported F1 scores or indirectly calculated F1 scores from reported precision and recall). However, we also observe that other metrics were widely used as well in reporting validation. This is somewhat disconcerting insofar as these tend to be indeed either the intercoder reliability measures (e.g., Holsti, Cohen’s Kappa, Krippendorff’s alpha) or correlation coefficients, which is \textit{not} designed for the validation of a given automated procedures. Interestingly, there were only three studies which reported \textit{both} Krippendorff’s alpha in human-coded materials \textit{and} proper validation metrics. Generally, the result of Study 1 reveals that reported measures of validations and the quality of human-coded data used in such validations are far from what is being acknowledged as the best-practice in extant literature. \newline
+
+\begin{table}[!htbp]
+  \caption{Results of the systematic literature review} \label{tab:Table1} 
+\begin{tabular}{@{\extracolsep{5pt}} cccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ \textbf{Method} & \textbf{Total} & \textbf{Refer to} &  \textbf{Report} & \textbf{Refer to} & \textbf{Report} \\ 
+ \textbf{Used} & & \textbf{Gold Standard} & \textbf{Reliability} & \textbf{Validation} & \textbf{Val measures} \\
+\hline \\[-1.8ex] 
+ Dictionary & 55 & 29 (53\%) & 9 (16\%) & 27 (49\%) & 21 (38\%) \\
+ Supervised ML & 18 & 16 (89\%) & 10 (56\%) & 15 (83\%) & 12 (67\%) \\
+\hline \\[-1.8ex] 
+ Total & 73 & 45 (62\%) & 19 (26\%) & 42 (58\%) & 33 (45\%) \\ 
+\hline \\[-1.8ex]  
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\small \vspace{0.15in}
+\textbf{Note:} Percentages refer to share of articles using that method.\\ 
+\end{tablenotes}
+\end{table}
 
 \section{Study 2: A Monte-Carlo Simulation Study}
     
@@ -195,10 +216,8 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
 
     As an initial model check, we first investigate the overall classification accuracy (against true value) as a function of target reliability in validation materials, predicting how well the proposed algorithms correctly recover the quantity of interest in data (such as a certain actor, frame, or tonality) at varying levels of reliability in validation materials. In Figure \ref{fig:Figure1}, different levels of target Krippendorff's alpha is stacked over y-axis, and in x-axis the overall prediction accuracy against true value (defined as the proportion of correct predictions, or the sum of true positive and true negative cases over entire cases) is reported; they are presented along with their 95\% confidence intervals, for every combination of experimental factors in MC simulations.
 
-\centerline{ -- Figure \ref{fig:Figure1} about here -- }    
-    
 % Figure 1: Overall accuracy
-\begin{figure}
+\begin{figure}[!htbp]
          \captionsetup[figure]{labelfont=bf,textfont=normalfont,singlelinecheck=on}
          \centering
          \includegraphics[trim={0.2cm 0.2cm 0.2cm 0.2cm}, clip, width=\columnwidth]{Results/overall_accuracy.pdf} 
@@ -209,38 +228,13 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
 
     As can be seen in Figure \ref{fig:Figure1} above, within two ML scenarios, using \enquote{better} quality training material appears to directly increase true classification accuracy. Using the overall accuracy in our simulation as the reference point, the first and the second panels of Figure \ref{fig:Figure1} makes it clear that the reliability level of the training material has a nontrivial benefit in improving the accuracy of predictions based on automated procedures. Indeed, this results is somewhat expected since the ML methods takes the human input as the basis for developing the classification algorithm, therefore overall accuracy of the final classifier is dependent upon human input and its quality thereof. In contrast, the last panel of Figure \ref{fig:Figure1} shows that the typical Bag-of-words application does not benefit from improved (post-hoc) human coding. Yet again, this is a much expected pattern, since the quality of a given dictionary itself does not depend at all on \textit{post-hoc} validation of human coding unless manual coding is directly utilized in developing and constructing dictionary itself. Overall, our results presented in Figure \ref{fig:Figure1} show that our simulation setup can correctly reproduce a common pattern in extant studies (therefore ensures the validity of our analysis and conclusion).   
 
-    Next, we examine indirect consequences of relying on imperfect human coded materials as a benchmark in evaluating the performances of automated procedures in terms of post-hoc validation. Typically, researchers rely on a small fraction of human-coded materials for validating their primary findings from automated procedures, deciding whether the overall accuracy or classification performance is good enough to proceed to further analyses. This decision has to be based on some some \textit{a priori} chosen threshold value: if validation (based on human coding) is purportedly not satisfying enough to pass such a threshold level, additional steps are sought to improve the quality of automated procedures (e.g., re-training of algorithms, or changing the dictionary, etc).\footnote{ Here, we do not consider a scenario where a researcher decides to improve the quality of human coding. This is based on the consideration, as to our argument being advanced here, that a researcher (often incorrectly) assumes that human coding is perfectly reliable and valid.} The primary interest of such validation lies in extrapolating the observed level of classification performance (based on validation materials) to the level of classification performance \textit{that could have been observed} based on the entire range of data. In other words, the observed level of classification performance serves as a proxy, or an estimate for the true, unknown classification performance. Therefore, an interesting question here is how well the observed classification performance reflects the true classification performance under imperfect reliability, and how large or small a potential bias is. Relatedly, making decisions about the unknown, true values of the overall classification performance based on the observed performance from hand-coded validation materials, essentially, can be seen as classical decision error scenarios (i.e., type I and type II errors), as schematically presented in Table \ref{tab:Table2}.
-\centerline{ -- Table \ref{tab:Table2} about here -- }    
+    Next, we examine indirect consequences of relying on imperfect human coded materials as a benchmark in evaluating the performances of automated procedures in terms of post-hoc validation. Typically, researchers rely on a small fraction of human-coded materials for validating their primary findings from automated procedures, deciding whether the overall accuracy or classification performance is good enough to proceed to further analyses. This decision has to be based on some some \textit{a priori} chosen threshold value: if validation (based on human coding) is purportedly not satisfying enough to pass such a threshold level, additional steps are sought to improve the quality of automated procedures (e.g., re-training of algorithms, or changing the dictionary, etc).\footnote{ Here, we do not consider a scenario where a researcher decides to improve the quality of human coding. This is based on the consideration, as to our argument being advanced here, that a researcher (often incorrectly) assumes that human coding is perfectly reliable and valid.} The primary interest of such validation lies in extrapolating the observed level of classification performance (based on validation materials) to the level of classification performance \textit{that could have been observed} based on the entire range of data. In other words, the observed level of classification performance serves as a proxy, or an estimate for the true, unknown classification performance. Therefore, an interesting question here is how well the observed classification performance reflects the true classification performance under imperfect reliability, and how large or small a potential bias is. Relatedly, making decisions about the unknown, true values of the overall classification performance based on the observed performance from hand-coded validation materials, essentially, can be seen as classical decision error scenarios (i.e., type I and type II errors), as schematically presented in Table \ref{tab:Table2}. \newline
 
-% Table 1 and 2.
-\begin{table}[!htbp] \centering 
-	\begin{minipage}{\textwidth}
-    \centering
-  \caption{\\ Results of the systematic literature review} 
-  \label{tab:Table1} 
-\begin{tabular}{@{\extracolsep{5pt}} cccccc} 
-\\[-1.8ex]\hline 
-\hline \\[-1.8ex] 
- \textbf{Method} & \textbf{Total} & \textbf{Refer to} &  \textbf{Report} & \textbf{Refer to} & \textbf{Report} \\ 
- \textbf{Used} & & \textbf{Gold Standard} & \textbf{Reliability} & \textbf{Validation} & \textbf{Val measures} \\
-\hline \\[-1.8ex] 
- Dictionary & 55 & 29 (53\%) & 9 (16\%) & 27 (49\%) & 21 (38\%) \\
- Supervised ML & 18 & 16 (89\%) & 10 (56\%) & 15 (83\%) & 12 (67\%) \\
-\hline \\[-1.8ex] 
- Total & 73 & 45 (62\%) & 19 (26\%) & 42 (58\%) & 33 (45\%) \\ 
-\hline \\[-1.8ex]  
-\end{tabular} 
-\begin{tablenotes}[para,flushleft]
-\small \vspace{0.15in}
-\textbf{Note:} Percentages refer to share of articles using that method.\\ 
-\end{tablenotes}
- 	\end{minipage}
-\bigbreak
-\vspace{0.5in}
+% Table 2.
+\begin{table}[!htbp] 
  	\begin{minipage}{\textwidth}
     \centering
-\caption{\\ Decision scenarios based on observed vs. true level of classification performance.} 
-  \label{tab:Table2} 
+\caption{Decision scenarios based on observed vs. true level of classification performance.} \label{tab:Table2} 
   \begin{tabular}{ ccc}
 \toprule
       \multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{True classification performance}} \\
@@ -254,11 +248,10 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
   \end{minipage}
 \end{table} 
 
-    In order to illuminate the potential consequences of relying on imperfect data in making decisions about the true, unknown classification performances of the proposed automated procedure, we divide our entire simulations into four mutually exclusive categories, as in Table \ref{tab:Table1}, based on the cross-tabulation of \enquote{observed} F1 scores (from validation materials) against true F1 scores (based on the true values of y). We first present the proportion of simulation cases which incorrectly conclude about the overall classification quality based on observed quality. Second, we further present the degree of relative \enquote{bias} within such incorrectly concluded cases --- defined as the $ F1_{validation}/F1_{true} $, where F1 score is a weighted average of the precision and recall --- which captures the degree of under- or over-estimation of (true) overall F1 scores against observed F1 scores based on human validation materials. For this application, we choose the cutoff value of F1 score to be 0.6311, which is just the average F1 score reported in Study 1.
-\centerline{ -- Figure \ref{fig:Figure2} to Figure \ref{fig:Figure4} about here -- }    
+    In order to illuminate the potential consequences of relying on imperfect data in making decisions about the true, unknown classification performances of the proposed automated procedure, we divide our entire simulations into four mutually exclusive categories, as in Table \ref{tab:Table1}, based on the cross-tabulation of \enquote{observed} F1 scores (from validation materials) against true F1 scores (based on the true values of y). We first present the proportion of simulation cases which incorrectly conclude about the overall classification quality based on observed quality. Second, we further present the degree of relative \enquote{bias} within such incorrectly concluded cases --- defined as the $ F1_{validation}/F1_{true} $, where F1 score is a weighted average of the precision and recall --- which captures the degree of under- or over-estimation of (true) overall F1 scores against observed F1 scores based on human validation materials. For this application, we choose the cutoff value of F1 score to be 0.6311, which is just the average F1 score reported in Study 1. 
 
 % Figure 2 proportion of decision error, Naive Bayes
-\begin{figure}
+\begin{figure}[!htbp] 
 \captionsetup[figure]{labelfont={bf,it}}
     \centering
     \begin{subfigure}[t]{0.95\textwidth}
@@ -279,7 +272,7 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
 \end{figure}          
 
 % Figure 3 proportion of decision error, GLM
-\begin{figure}
+\begin{figure}[!htbp] 
 \captionsetup[figure]{labelfont={bf,it}}
     \centering
     \begin{subfigure}[t]{0.95\textwidth}
@@ -299,7 +292,7 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
 \end{figure}     
 
 % Figure 4 proportion of decision error, BoW
-\begin{figure}
+\begin{figure}[!htbp] 
 \captionsetup[figure]{labelfont={bf,it}}
     \centering
     \begin{subfigure}[t]{0.95\textwidth}
@@ -326,17 +319,17 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
 
     Coupled together, the results from both studies give good reason for concern about the quality (or rather the \textit{validity}) of conclusions drawn from automated content analyses in the social sciences. In order to make sensible conclusions from data, a proper validation of the proposed automated methods is much needed. A statistical model may have an excellent fit to the data and a chosen dictionary may very well recover some pre-defined categorizations, but these metrics themselves do not provide any sensible meaning of their own if the model suffers from over-fitting the training data, or the pre-defined dictionary does not actually conceptually \enquote{align} with the categories of interest. To be clear, the current study \textit{does not} make a case for the argument that we should \textit{exclusively} rely on human validations. Quite the contrary, one of the main points being advanced here is that humans are not perfect. However, this study \textit{does} argue that \textit{proper} validation is essential in general. While the (potentially imperfect) human \enquote{gold standard} is often the best we can get, the results of this study suggest that extra cautions should be taken in such validation procedures. Often, imperfect judgment of human coding can percolate to machine coding to inferences if a researcher turns a blind eye to such imperfect quality of human judgment. We therefore advise researchers to pay closer attention to the issue of proper reliability in manually coded validation materials in order to reduce uncertainties in potential biases, while striving to increase the overall size of the validation materials as large as possible in order to reduce overall decision errors based on manual validation materials.    
 
-    Few limitations should be noted. First, and concerning Study 1, our systematic literature review is limited to studies explicitly using our search terms in their title, abstract, or keyword list. Such sample, by definition, does not include all potentially relevant articles from the last 20 years. Yet still, it allows us to make a sensible selection of extant articles that do not only use these methods but also advertise that they do so. In fact, we believe articles that are not part of our sample to be – on average – of even lesser rigor when it comes to the use and reporting of \enquote{gold standards} as well as the validation of automated procedures -- a circumstance that only adds more importance to our second study.
+    Few limitations should be noted. First, and concerning Study 1, our systematic literature review is limited to studies explicitly using our search terms in their title, abstract, or keyword list. Such sample, by definition, does not include all potentially relevant articles from the last 20 years. Yet still, it allows us to make a sensible selection of extant articles that do not only use these methods but also advertise that they do so. In fact, we believe articles that are not part of our sample to be of even lesser rigor in the use and reporting of \enquote{gold standards}
+    .
     
     Second, and concerning Study 2, we only have considered a binary classification task in our simulation setup and a single dimension of validation metrics --- specifically, recall, precision, and resulting F1 scores. While this greatly simplifies our main arguments and (still complex) simulation setups, there are indeed a nontrivial number of existing applications that go beyond such simple classifications, dealing with numerical forms of predictions (i.e., scaling). Ultimately our conclusion would be bounded to our specific setup, yet we reason that our core arguments can be equally applicable to more complex forms of automated content analysis as well, and potentially to any unsupervised methods for that matter. Given the additional complexity and difficulties involved in such complex, numerical forms of predictions (e.g., document scaling) for human coders, achieving acceptable intercoder reliability in such applications likely to be even more difficult compared to that of simple binary ones. Hence we suspect the potential problems of \enquote{imperfect quality} in human-coded validation materials should be greater, if not identical, on those applications. 
 
     Designing a simulation-based study gives us a unique opportunity to see the many potential \textit{what if} scenarios of the research processes. Such an approach, if carefully designed, allows to robustly explore potentially important variability in research processes in a probabilistic manner without having to actually spend resources on carrying out those scenarios. Also, one of the core advantages of relying on such a simulation-based approach is that a researcher has the ability of \enquote{knowing the truth,} specifically the true value of the quantity of interest, $y$, as well as their correct functional forms that produce each observation (of media data) in this case. This also provides a means for formally checking the sensitivity of one’s findings, or enables one to provide a proper context of one's findings by exploring counterfactual scenarios. Such clairvoyance, however, comes at a cost --- the degree of abstraction and simplification. This simplification is done not only for computational, but also for conceptual reasons, however. As \textcite{scharkow2017measurement} note, \enquote{the challenge is to specify a simulation that is simple enough to be comprehensible, yet realistically models the underlying process of interest} (p. 330). In this regard, we have relied on somewhat idiosyncratic and simplified approaches in our simulations. While we surely acknowledge that our setup could have been constructed in a more realistic and complex way, our ability to accurately simulate human behaviour does not necessarily depends on very complex models. 
 
-    Notwithstanding these limitations, we believe that our contribution would further prompt researchers both in communication science and the social sciences more generally to pay more close attention to the issues of systematic validation of automated content analytic methods. Our contribution should be read as a call for a thorough and systematic application of validation procedures -- especially the ones involving manually annotated materials as a \enquote{gold standard.} Statistical models and algorithms, while being infallible in terms of reliability, are not inherently correct; they are only useful in so far as they can properly approximate researchers' conceptualizations. And this degree of approximation, we argue, can only be established after thorough and systematic validations. In this regard, it is worth stressing here that automated content analysis should not be just regarded as a cheap alternative to expensive manual coding, and it also takes -- and indeed should take -- a good amount of time and resources. Otherwise, the risk of “garbage in, garbage out” appears to loom large. To this end, a little extra time spent on designing proper validation does quickly pay off, eventually would ensure inferences and conclusion drawn from such studies does not start to stink.
+    Notwithstanding these limitations, we believe that our contribution would further prompt researchers both in communication science and the social sciences more generally to pay more close attention to the issues of systematic validation of automated content analytic methods. Our contribution should be read as a call for a thorough and systematic application of validation procedures -- especially the ones involving manually annotated materials as a \enquote{gold standard.} Statistical models and algorithms, while being infallible in terms of reliability, are not inherently correct; they are only useful in so far as they can properly approximate researchers' conceptualizations. And this degree of approximation, we argue, can only be established after thorough and systematic validations. In this regard, it is worth stressing here that automated content analysis should not be just regarded as a cheap alternative to expensive manual coding, and it also takes -- and indeed should take -- a good amount of time and resources. Otherwise, the risk of “garbage in, garbage out” appears to loom large. To this end, a little extra time spent on designing proper validation does quickly pay off, eventually would ensure inferences and conclusion drawn from such studies does not start to stink. 
 
-    
 \printbibliography
-%\newpage
+%
 %\begingroup
 %\parindent 0pt
 %\parskip 1ex
