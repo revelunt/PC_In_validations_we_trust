@@ -298,9 +298,9 @@ p4_1 <- sim.naive.results[, .(bias.F1 = median(bias.F1),
 # dev.off()
 #
 
-sim.naive.results[, results2 := ifelse(Valdat.f > 0.6429,
-                                       ifelse(f.overall > 0.6429, "True Pos", "False Pos"),
-                                       ifelse(f.overall > 0.6429, "False Neg", "True Neg"))]
+sim.naive.results[, results2 := ifelse(Valdat.f > 0.6311,
+                                       ifelse(f.overall > 0.6311, "True Pos", "False Pos"),
+                                       ifelse(f.overall > 0.6311, "False Neg", "True Neg"))]
 dat_2 <- sim.naive.results[!is.na(bias.F1), .(percent = .N / 1000,
                                bias.F1 = median(bias.F1, na.rm = T),
                                lwr = quantile(bias.F1, 0.025, na.rm = T),
@@ -466,9 +466,9 @@ dat_3 <- sim.binomial.results[!is.na(bias.accuracy), .(percent = .N / 1000,
 # dev.off()
 
 
-sim.binomial.results[, results2 := ifelse(Valdat.f > 0.6429,
-                                         ifelse(f.overall > 0.6429, "True Pos", "False Pos"),
-                                         ifelse(f.overall > 0.6429, "False Neg", "True Neg"))]
+sim.binomial.results[, results2 := ifelse(Valdat.f > 0.6311,
+                                         ifelse(f.overall > 0.6311, "True Pos", "False Pos"),
+                                         ifelse(f.overall > 0.6311, "False Neg", "True Neg"))]
 dat_4 <- sim.binomial.results[!is.na(bias.F1), .(percent = .N / 1000,
                                   bias.F1 = median(bias.F1, na.rm = T),
                                   lwr = quantile(bias.F1, 0.025, na.rm = T),
@@ -629,9 +629,9 @@ dat_5 <- sim.bow.results[!is.na(bias.accuracy), .(percent = .N / 1000,
 # dev.off()
 
 
-sim.bow.results[, results2 := ifelse(Valdat.f > 0.6429,
-                                     ifelse(f.overall > 0.6429, "True Pos", "False Pos"),
-                                     ifelse(f.overall > 0.6429, "False Neg", "True Neg"))]
+sim.bow.results[, results2 := ifelse(Valdat.f > 0.6311,
+                                     ifelse(f.overall > 0.6311, "True Pos", "False Pos"),
+                                     ifelse(f.overall > 0.6311, "False Neg", "True Neg"))]
 dat_6 <- sim.bow.results[!is.na(bias.F1), .(percent = .N / 1000,
                              bias.F1 = median(bias.F1, na.rm = T),
                              lwr = quantile(bias.F1, 0.025, na.rm = T),
