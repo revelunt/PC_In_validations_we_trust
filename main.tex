@@ -29,18 +29,8 @@
 \DeclareCaptionTextFormat{tabletext}{\raggedright\textit{#1}}
 
 % for word counts
-\newcommand{\detailtexcount}{%
-  \immediate\write18{texcount -merge -sum -incbib -dir \jobname.tex > \jobname.wcdetail }%
-  \verbatiminput{\jobname.wcdetail}%
-}
-\newcommand{\quickwordcount}{%
-  \immediate\write18{texcount -1 -sum -merge \jobname.tex > \jobname-words.sum }%
-  \input{\jobname-words.sum} words%
-}
-\newcommand{\quickcharcount}{%
-  \immediate\write18{texcount -1 -sum -merge -char \jobname.tex > \jobname-chars.sum }%
-  \input{\jobname-chars.sum} characters (not including spaces)%
-}
+\immediate\write18{texcount -inc -incbib -sum main.tex > /tmp/wordcount.tex}
+\newcommand\wordcount{\verbatiminput{/tmp/wordcount.tex}}
 
 % Biblatex
 \usepackage[style=apa,sortcites=true,sorting=nyt,backend=biber,uniquename=false]{biblatex}
@@ -67,8 +57,7 @@
 \shorttitle{When Does Garbage Stink?}
 
 
-\author{\addvspace{.25in} Hyunjin Song, Petro Tolochko, Jakob-Moritz Eberl, Olga Eisele, Esther Greussing, \\
-        Tobias Heidenreich, Fabienne Lind, Sebastian Galyga, and Hajo G. Boomgaarden}
+\author{\addvspace{.25in} Hyunjin Song, Petro Tolochko, Jakob-Moritz Eberl, Olga Eisele, Esther Greussing, Tobias Heidenreich, Fabienne Lind, Sebastian Galyga, and Hajo G. Boomgaarden}
 
 \affiliation{Department of Communication, University of Vienna, Austria}
 
@@ -87,6 +76,7 @@ Paper prepared for Inaugural issue of Computational Communication Research  \\
 \addvspace{.25in} 
       \textbf{Draft in progress. Please do not cite without permission.} \\
       A replication code for this manuscript can be found at: http://github.com/revelunt/CCR-When-does-garbage-stink
+      \wordcount
       }
 
 \begin{document}
