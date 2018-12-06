@@ -8,8 +8,8 @@
 
 ## install required libraries if not already installed
 list.of.packages <- c("data.table", "tidyverse", "dplyr",
-                      "ggplot2", "grid", "stringi", "tidyr",
-                      "irr", "caret", "rstudioapi",
+                      "ggplot2", "grid", "stringi", "tidyr", "MCMCpack",
+                      "irr", "caret", "rstudioapi", "tidytext", "extraDistr",
                       'naivebayes', 'brms', 'rstan')
 new.packages <- list.of.packages[!(list.of.packages %in%
                                      installed.packages()[,"Package"])]
@@ -110,8 +110,9 @@ RNGkind("L'Ecuyer-CMRG")
 set.seed(12345)
 
 sim.naive.results <- mclapply(1:1000, function(k) {
+  k ## mclapply needs to take the 'X' list as the arguments to function
   out <- sim.all.scenario.once_naive()
-  out
+  return(out)
   }, mc.cores = parallel::detectCores(logical = T))
 sim.naive.results <- do.call("rbind", sim.naive.results)
 sim.naive.results[, replication := rep(1:1000, each = 80)]
@@ -124,8 +125,9 @@ rm(sim.naive.results); gc()
 RNGkind("L'Ecuyer-CMRG")
 set.seed(12345)
 sim.binomial.results <- mclapply(1:1000, function(k) {
+  k
   out <- sim.all.scenario.once_binomial()
-  out
+  return(out)
   }, mc.cores = parallel::detectCores(logical = T))
 sim.binomial.results <- do.call("rbind", sim.binomial.results)
 sim.binomial.results[, replication := rep(1:1000, each = 80)]
@@ -138,8 +140,9 @@ rm(sim.binomial.results); gc()
 RNGkind("L'Ecuyer-CMRG")
 set.seed(12345)
 sim.bow.results <- mclapply(1:1000, function(k) {
+  k
   out <- sim.all.scenario.once_bow()
-  out
+  return(out)
   }, mc.cores = parallel::detectCores(logical = T))
 sim.bow.results <- do.call("rbind", sim.bow.results)
 sim.bow.results[, replication := rep(1:1000, each = 80)]
