@@ -113,7 +113,7 @@ sim.naive.results <- mclapply(1:1000, function(k) {
   k ## mclapply needs to take the 'X' list as the arguments to function
   out <- sim.all.scenario.once_naive()
   return(out)
-  }, mc.cores = parallel::detectCores(logical = T))
+  }, mc.cores = parallel::detectCores(logical = F))
 sim.naive.results <- do.call("rbind", sim.naive.results)
 sim.naive.results[, replication := rep(1:1000, each = 80)]
 save(sim.naive.results, file = "sim.naive.results.Rdata")
@@ -154,6 +154,8 @@ rm(sim.bow.results); gc()
 ## summarizing results ##
 ## ------------------- ##
 
+if(!("patchwork" %in% installed.packages()[,"Package"]))
+  devtools::install_github("thomasp85/patchwork")
 require(patchwork)
 
 # ----------- Naive Bayes ----------- #

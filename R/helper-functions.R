@@ -4,7 +4,7 @@
 ## Copyright: Hyunjin Song & Petro Tolochko, Dept. of Comm @ Uni Wien ##
 ## -------------------------------------------------------------------##
 require(rstan)
-options(mc.cores = parallel::detectCores())
+options(mc.cores = parallel::detectCores(logical = F))
 expose_stan_functions('functions_stan.stan')
 
 ## media content generating function
