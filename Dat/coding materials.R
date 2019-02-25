@@ -34,6 +34,7 @@ colnames(reliability.data) <- c("ID", "Author", "Year", "Journal",
                                "F_measure", "Other", "Comments")
 
 library(tidyr)
+require(irr)
 
 ## relevance of an article (alpha = 1)
 spread(reliability.data[, Relevant, by = c("ID", "Coder")],
@@ -63,7 +64,7 @@ spread(reliability.data[, ReliabilityType, by = c("ID", "Coder")],
   as.matrix(.) %>% kripp.alpha(., method = "nominal")
 
 # "Intercoder reliability type reported?" (alpha = 0.6) -- Too few fairs
-reliability.data[, ReliabilityType := as.numeric(
+reliability.data[, ValidationProcedures := as.numeric(
   car::recode(ValidationProcedures, "0 = 0; 1 = 1; else = NA"))]
 spread(reliability.data[, ValidationProcedures, by = c("ID", "Coder")],
        key = "ID", value = "ValidationProcedures")[, -1] %>%
