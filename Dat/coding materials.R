@@ -21,9 +21,7 @@ theme_set(theme_bw())
 ## read-in the data
 reliability.data <- readxl::read_xlsx("Reliability_CCR.xlsx")
 setDT(reliability.data)
-
-study1data <- readxl::read_xlsx("When does garbage stink_ ArticleCodingFile.xlsx")
-reliability.data <- reliability.data[-c(1:4), 2:24]
+reliability.data <- reliability.data[-c(1:3), 2:24]
 colnames(reliability.data) <- c("ID", "Author", "Year", "Journal",
                                "Coder", "NoFullText", "Relevant",
                                "MethodsUsed", "N_Total", "GoldStandard",
@@ -42,30 +40,63 @@ spread(reliability.data[, Relevant, by = c("ID", "Coder")],
   as.matrix(.) %>% kripp.alpha(., method = "nominal")
 
 # "Automated Method Used" (alpha = 1)
-spread(reliability.data[, MethodsUsed, by = c("ID", "Coder")],
+spread(reliability.data[Relevant == 1, MethodsUsed, by = c("ID", "Coder")],
        key = "ID", value = "MethodsUsed")[, -1] %>%
   as.matrix(.) %>% kripp.alpha(., method = "nominal")
 
 # "Refer to Gold Standard?" (alpha = 1)
-spread(reliability.data[, GoldStandard, by = c("ID", "Coder")],
+spread(reliability.data[Relevant == 1, GoldStandard, by = c("ID", "Coder")],
        key = "ID", value = "GoldStandard")[, -1] %>%
   as.matrix(.) %>% kripp.alpha(., method = "nominal")
 
 # "Report intercoder reliability?" (alpha = 1)
-spread(reliability.data[, INTERcoderReliability, by = c("ID", "Coder")],
+spread(reliability.data[Relevant == 1,
+                        INTERcoderReliability, by = c("ID", "Coder")],
        key = "ID", value = "INTERcoderReliability")[, -1] %>%
   as.matrix(.) %>% kripp.alpha(., method = "nominal")
 
-# "Intercoder reliability type reported?" (alpha = 0.6) -- Too few fairs
-reliability.data[, ReliabilityType := as.numeric(
-  car::recode(ReliabilityType, "1 = 1; 2 = 2; 3 = 3; 4 = 4; else = NA"))]
-spread(reliability.data[, ReliabilityType, by = c("ID", "Coder")],
-       key = "ID", value = "ReliabilityType")[, -1] %>%
+# # "Intercoder reliability type reported?" -- Too few fairs
+# reliability.data[, ReliabilityType := as.numeric(
+#   car::recode(ReliabilityType, "1 = 1; 2 = 2; 3 = 3; 4 = 4; else = NA"))]
+# spread(reliability.data[, ReliabilityType, by = c("ID", "Coder")],
+#        key = "ID", value = "ReliabilityType")[, -1] %>%
+#   as.matrix(.) %>% kripp.alpha(., method = "nominal")
+
+# "Refer to Validation procedures" (alpha = 0.6) -- Too few fairs
+reliability.data[Relevant == 1, ValidationProcedures := as.numeric(
+  car::recode(ValidationProcedures, "'0' = 0; '1' = 1; else = NA"))]
+test <- spread(reliability.data[Relevant == 1,
+                                ValidationProcedures, by = c("ID", "Coder")],
+       key = "ID", value = "ValidationProcedures")
+
+test2 <- matrix(c(1,0,0,0,
+                  1,1,NA,1,
+                  0,0,0,0,
+                  1,1,0,1,
+                  0,0,0,0,
+                  1,NA,NA,1), nrow = 4, byrow = F)
+
+colnames(test2) <- c(1,10,2,4,6,9)
+test2 %>% kripp.alpha(., method = "nominal")
+
+test <- merge(reliability.data[Relevant == 1,
+                 car::recode(Recall_Sensitivity,
+                             "NA = NA; 'NA' = NA; else = 1"),
+                 by = c("ID", "Coder")],
+      reliability.data[Relevant == 1,
+                 car::recode(Precision,
+                             "NA = NA; 'NA' = NA; else = 1"),
+                 by = c("ID", "Coder")],
+      by = c("ID", "Coder"))
+
+test[, measures := rowSums(.SD, na.rm = T),
+       .SDcols = c("V1.x", "V1.y")]
+test[, measures := car::recode(measures, "2=1")]
+
+spread(test[, measures, by = c("ID", "Coder")],
+       key = "ID", value = "measures")[, -1] %>%
   as.matrix(.) %>% kripp.alpha(., method = "nominal")
 
-# "Intercoder reliability type reported?" (alpha = 0.6) -- Too few fairs
-reliability.data[, ValidationProcedures := as.numeric(
-  car::recode(ValidationProcedures, "0 = 0; 1 = 1; else = NA"))]
-spread(reliability.data[, ValidationProcedures, by = c("ID", "Coder")],
-       key = "ID", value = "ValidationProcedures")[, -1] %>%
-  as.matrix(.) %>% kripp.alpha(., method = "nominal")
+
+#reliability.data[, F_measure]
+#reliability.data[, Other]
