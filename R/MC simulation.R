@@ -324,7 +324,14 @@ p4_1 + ggtitle("Relative Bias in F1 (validation vs. true value)") +
   theme(plot.title = element_text(hjust = 0.5))
 dev.off()
 
+## percentage of decision error
+test <- dat_2[results2 %in% c("False Pos", "False Neg"), total.error := sum(percent), 
+              by = c("target.k.alpha", "k", "n.units_f")]
+test[total.error < 0.05,table(n.units_f, k)]
 
+test2 <- dat_2[results2 %in% c("False Pos"), total.error := sum(percent), 
+              by = c("target.k.alpha", "k", "n.units_f")]
+test2[total.error < 0.05,table(n.units_f, k)]
 
 # ------------------ GLM -------------- #
 
@@ -492,6 +499,14 @@ p8_1 + ggtitle("Relative Bias in F1 (validation vs. true value)") +
   theme(plot.title = element_text(hjust = 0.5))
 dev.off()
 
+## percentage of decision error
+test <- dat_4[results2 %in% c("False Pos", "False Neg"), total.error := sum(percent), 
+              by = c("target.k.alpha", "k", "n.units_f")]
+test[total.error < 0.05,table(n.units_f, k)]
+
+test2 <- dat_4[results2 %in% c("False Pos"), percent, 
+               by = c("target.k.alpha", "k", "n.units_f")]
+test2[percent < 0.05,table(n.units_f, k)]
 
 # ------------- Bag of Words ----------------
 
@@ -655,6 +670,14 @@ p12_1 + ggtitle("Relative Bias in F1 (validation vs. true value)") +
   theme(plot.title = element_text(hjust = 0.5))
 dev.off()
 
+## percentage of decision error
+test <- dat_6[results2 %in% c("False Pos", "False Neg"), total.error := sum(percent, na.rm = T), 
+              by = c("target.k.alpha", "k", "n.units_f")]
+test[total.error < 0.05,table(n.units_f, k)]
+
+test2 <- dat_6[results2 %in% c("False Pos"), percent, 
+               by = c("target.k.alpha", "k", "n.units_f")]
+test2[percent < 0.05,table(n.units_f, k)]
 
 ## overall classification accuracy
 require(patchwork)
