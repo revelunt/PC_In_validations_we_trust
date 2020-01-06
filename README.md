@@ -1,6 +1,6 @@
 # Replication Materials Details
 
-This repository contains replication materials for the paper "In Validations We Trust? The Impact of Imperfect Human Annotations as a Gold Standard on the Quality of Validation of Automated Content Analysis." For any questions or inquries, please contact the corresponding author (Hyunjin Song, hyunjin.song@univie.ac.at).
+This repository contains replication materials for the paper "In Validations We Trust? The Impact of Imperfect Human Annotations as a Gold Standard on the Quality of Validation of Automated Content Analysis," forthcoming in Political Communication. For any questions or inquries, please contact the corresponding author (Hyunjin Song, hyunjin.song@univie.ac.at).
 
 This replication code is dependent upon rstan library for simulation analysis. For installing rstan and Stan library, see [Rstan start guide](https://mc-stan.org/users/interfaces/rstan.html).
 
