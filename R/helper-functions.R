@@ -7,6 +7,9 @@ require(rstan)
 options(mc.cores = parallel::detectCores(logical = F))
 expose_stan_functions('functions_stan.stan', show_compiler_warnings = F)
 
+## not in (%!in%)
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
 ## media content generating function
 data.initiate <- function(seed) {
 
